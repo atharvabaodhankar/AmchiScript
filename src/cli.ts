@@ -1,8 +1,9 @@
 import { Lexer } from './lexer';
 import { Parser } from './parser';
+import { Interpreter } from './interpreter';
 import { TokenType } from './types';
 
-function run(source: string) {
+export function run(source: string) {
   const lexer = new Lexer(source);
   const tokens = lexer.tokenize();
 
@@ -14,13 +15,11 @@ function run(source: string) {
 
   console.log('\n--- AST ---');
   console.log(JSON.stringify(ast, null, 2));
+
+  const interpreter = new Interpreter();
+  interpreter.interpret(ast);
 }
 
-// Example usage:
-const program = `
-chalti start;
-bolta "Hello, AmchiScript!";
-bas kar;
-`;
-
-run(program);
+// This part will be handled by the CLI argument parsing
+// For now, we'll keep the run function as is, and the main execution logic
+// will be in index.ts or similar.
