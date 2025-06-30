@@ -96,97 +96,122 @@ export interface Program extends ASTNode {
   body: Statement[];
 }
 
-export interface Statement extends ASTNode {}
-export interface Expression extends ASTNode {}
+
+
+export interface PlaceholderStatement {
+  type: 'PlaceholderStatement';
+}
+
+export type Statement = 
+  | Program
+  | VariableDeclaration
+  | Assignment
+  | PrintStatement
+  | BlockStatement
+  | IfStatement
+  | WhileStatement
+  | FunctionDeclaration
+  | ReturnStatement
+  | BreakStatement
+  | ContinueStatement
+  | PlaceholderStatement;
+
+export type Expression =
+  | Literal
+  | Identifier
+  | BinaryExpression
+  | UnaryExpression
+  | CallExpression
+  | MemberExpression;
 
 // Statements
-export interface VariableDeclaration extends Statement {
+export interface VariableDeclaration {
   type: 'VariableDeclaration';
   identifier: string;
   value: Expression;
 }
 
-export interface Assignment extends Statement {
+export interface Assignment {
   type: 'Assignment';
   identifier: string;
   value: Expression;
 }
 
-export interface PrintStatement extends Statement {
+export interface PrintStatement {
   type: 'PrintStatement';
   expressions: Expression[];
 }
 
-export interface BlockStatement extends Statement {
+export interface BlockStatement {
   type: 'BlockStatement';
   body: Statement[];
 }
 
-export interface IfStatement extends Statement {
+export interface IfStatement {
   type: 'IfStatement';
   condition: Expression;
   consequent: Statement;
   alternate?: Statement;
 }
 
-export interface WhileStatement extends Statement {
+export interface WhileStatement {
   type: 'WhileStatement';
   condition: Expression;
   body: Statement;
 }
 
-export interface FunctionDeclaration extends Statement {
+export interface FunctionDeclaration {
   type: 'FunctionDeclaration';
   name: string;
   parameters: string[];
   body: BlockStatement;
 }
 
-export interface ReturnStatement extends Statement {
+export interface ReturnStatement {
   type: 'ReturnStatement';
   value?: Expression;
 }
 
-export interface BreakStatement extends Statement {
+export interface BreakStatement {
   type: 'BreakStatement';
 }
 
-export interface ContinueStatement extends Statement {
+export interface ContinueStatement {
   type: 'ContinueStatement';
 }
 
 // Expressions
-export interface Literal extends Expression {
+export interface Literal {
   type: 'Literal';
   value: any;
   raw: string;
 }
 
-export interface Identifier extends Expression {
+export interface Identifier {
   type: 'Identifier';
   name: string;
 }
 
-export interface BinaryExpression extends Expression {
+export interface BinaryExpression {
   type: 'BinaryExpression';
   left: Expression;
   operator: string;
   right: Expression;
 }
 
-export interface UnaryExpression extends Expression {
+export interface UnaryExpression {
   type: 'UnaryExpression';
   operator: string;
   argument: Expression;
 }
 
-export interface CallExpression extends Expression {
+export interface CallExpression {
   type: 'CallExpression';
   callee: Expression;
   arguments: Expression[];
 }
 
-export interface MemberExpression extends Expression {
+export interface MemberExpression {
   type: 'MemberExpression';
   object: Expression;
   property: Expression;
