@@ -133,6 +133,13 @@ export type Expression =
   | CallExpression
   | MemberExpression;
 
+export interface BinaryExpression {
+  type: 'BinaryExpression';
+  left: Expression;
+  operator: string;
+  right: Expression;
+}
+
 // Statements
 export interface VarDeclaration {
   type: 'VarDeclaration';

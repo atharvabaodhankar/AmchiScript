@@ -1,5 +1,5 @@
 import { RuntimeError } from './errors';
-import { Program, Statement, VarDeclaration, PrintStatement, Expression, Literal, Identifier } from './types';
+import { Program, Statement, VarDeclaration, PrintStatement, Expression, Literal, Identifier, IfStatement, BinaryExpression, BlockStatement } from './types';
 
 import { Environment } from './environment';
 
@@ -34,6 +34,12 @@ class Interpreter {
             case 'PrintStatement':
                 this.executePrintStatement(statement as PrintStatement);
                 break;
+            case 'IfStatement':
+                this.executeIfStatement(statement as IfStatement);
+                break;
+            case 'BlockStatement':
+                this.executeBlockStatement(statement as BlockStatement);
+                break;
             default:
                 throw new RuntimeError(`Unknown statement type: ${statement.type}`);
         }
@@ -53,9 +59,15 @@ class Interpreter {
         // This will be implemented in subsequent steps
         switch (expression.type) {
             case 'Literal':
-                return (expression as Literal).value;
+                const literal = expression as Literal;
+                if (typeof literal.value === 'string' && !isNaN(Number(literal.value))) {
+                    return Number(literal.value);
+                }
+                return literal.value;
             case 'Identifier':
                 return this.environment.get((expression as Identifier).name);
+            case 'BinaryExpression':
+                return this.evaluateBinaryExpression(expression as BinaryExpression);
             default:
                 throw new RuntimeError(`Unknown expression type: ${expression.type}`);
         }
@@ -67,6 +79,41 @@ class Interpreter {
             value = this.evaluate(statement.initializer);
         }
         this.environment.define(statement.name, value);
+    }
+
+    private executeIfStatement(statement: IfStatement): void {
+        if (this.evaluate(statement.condition)) {
+            this.execute(statement.consequent);
+        } else if (statement.alternate) {
+            this.execute(statement.alternate);
+        }
+    }
+
+    private executeBlockStatement(statement: BlockStatement): void {
+        for (const stmt of statement.body) {
+            this.execute(stmt);
+        }
+    }
+
+    private evaluateBinaryExpression(expression: BinaryExpression): any {
+        const left = this.evaluate(expression.left);
+        const right = this.evaluate(expression.right);
+
+        switch (expression.operator) {
+            case '>': return left > right;
+            case '>=': return left >= right;
+            case '<': return left < right;
+            case '<=': return left <= right;
+            case '==': return left == right;
+            case '!=': return left != right;
+            case '+': return left + right;
+            case '-': return left - right;
+            case '*': return left * right;
+            case '/': return left / right;
+            case '%': return left % right;
+            default:
+                throw new RuntimeError(`Unknown binary operator: ${expression.operator}`);
+        }
     }
 
     private stringify(value: any): string {

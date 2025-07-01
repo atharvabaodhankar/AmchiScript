@@ -1,0 +1,9 @@
+chala suru karu;
+  heAhe num = 10;
+
+  jar (num > 5) {
+    dakhava "Number is greater than 5";
+  } nahitar {
+    dakhava "Number is not greater than 5";
+  }
+bas re ata;

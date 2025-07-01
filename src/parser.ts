@@ -1,4 +1,4 @@
-import { Token, TokenType, Program, Statement, VarDeclaration, Expression, PrintStatement, Literal, Identifier } from './types';
+import { Token, TokenType, Program, Statement, VarDeclaration, Expression, PrintStatement, Literal, Identifier, IfStatement, BlockStatement, BinaryExpression } from './types';
 
 export class Parser {
   private tokens: Token[];
@@ -53,7 +53,40 @@ export class Parser {
     if (this.match(TokenType.DAKHAVA)) {
       return this.printStatement();
     }
+    if (this.match(TokenType.JAR)) {
+      return this.ifStatement();
+    }
     throw new Error(`Parse Error at line ${this.peek().line}, column ${this.peek().column}: Expected statement.`);
+  }
+
+  private ifStatement(): IfStatement {
+    this.consume(TokenType.LPAREN, 'Expected \'(\' after \'jar\'.');
+    const condition = this.expression();
+    this.consume(TokenType.RPAREN, 'Expected \')\' after if condition.');
+
+    this.consume(TokenType.LBRACE, 'Expected \'{\' before if block.');
+    const consequent: Statement[] = [];
+    while (!this.check(TokenType.RBRACE) && !this.isAtEnd()) {
+      consequent.push(this.declaration());
+    }
+    this.consume(TokenType.RBRACE, 'Expected \'}\' after if block.');
+
+    let alternate: Statement | undefined;
+    if (this.match(TokenType.NAHITAR)) {
+      if (this.match(TokenType.JAR)) {
+        alternate = this.ifStatement(); // Else if
+      } else {
+        this.consume(TokenType.LBRACE, 'Expected \'{\' before else block.');
+        const elseBody: Statement[] = [];
+        while (!this.check(TokenType.RBRACE) && !this.isAtEnd()) {
+          elseBody.push(this.declaration());
+        }
+        this.consume(TokenType.RBRACE, 'Expected \'}\' after else block.');
+        alternate = { type: 'BlockStatement', body: elseBody };
+      }
+    }
+
+    return { type: 'IfStatement', condition, consequent: { type: 'BlockStatement', body: consequent }, alternate };
   }
 
   private printStatement(): PrintStatement {
@@ -66,14 +99,41 @@ export class Parser {
   }
 
   private expression(): Expression {
-    // For now, let's just handle identifiers, strings, and numbers
-    if (this.match(TokenType.IDENTIFIER)) {
-      return { type: 'Identifier', name: this.previous().value } as Expression;
+    return this.comparison();
+  }
+
+  private comparison(): Expression {
+    let expr = this.primary();
+
+    while (this.match(TokenType.GREATER, TokenType.GREATER_EQUAL, TokenType.LESS, TokenType.LESS_EQUAL, TokenType.EQUAL, TokenType.NOT_EQUAL)) {
+      const operator = this.previous();
+      const right = this.primary();
+      expr = { type: 'BinaryExpression', left: expr, operator: operator.value, right: right } as BinaryExpression;
     }
-    if (this.match(TokenType.STRING, TokenType.NUMBER)) {
+
+    return expr;
+  }
+
+  private primary(): Expression {
+    if (this.match(TokenType.KHARA)) return { type: 'Literal', value: true, raw: 'khara' } as Literal;
+    if (this.match(TokenType.KHOTA)) return { type: 'Literal', value: false, raw: 'khota' } as Literal;
+    if (this.match(TokenType.RIKAM)) return { type: 'Literal', value: null, raw: 'rikam' } as Literal;
+
+    if (this.match(TokenType.NUMBER, TokenType.STRING)) {
       const token = this.previous();
       return { type: 'Literal', value: token.value, raw: token.value } as Literal;
     }
+
+    if (this.match(TokenType.IDENTIFIER)) {
+      return { type: 'Identifier', name: this.previous().value } as Identifier;
+    }
+
+    if (this.match(TokenType.LPAREN)) {
+      const expr = this.expression();
+      this.consume(TokenType.RPAREN, 'Expected \')\' after expression.');
+      return expr;
+    }
+
     throw new Error(`Parse Error at line ${this.peek().line}, column ${this.peek().column}: Expected expression.`);
   }
 
