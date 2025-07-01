@@ -1,7 +1,13 @@
-import { Program, Statement, Expression, Literal, PrintStatement } from './types';
 import { RuntimeError } from './errors';
+import { Program, Statement, VarDeclaration, PrintStatement, Expression, Literal, Identifier } from './types';
+
+import { Environment } from './environment';
 
 class Interpreter {
+    constructor() {
+        this.environment = new Environment();
+    }
+    private environment: Environment;
     interpret(program: Program): void {
         try {
             for (const statement of program.body) {
@@ -21,10 +27,15 @@ class Interpreter {
 
     private execute(statement: Statement): void {
         // This will be implemented in subsequent steps
-        if (statement.type === 'PrintStatement') {
-            this.executePrintStatement(statement as PrintStatement);
-        } else {
-            throw new RuntimeError(`Unknown statement type: ${statement.type}`);
+        switch (statement.type) {
+            case 'VarDeclaration':
+                this.executeVarDeclaration(statement as VarDeclaration);
+                break;
+            case 'PrintStatement':
+                this.executePrintStatement(statement as PrintStatement);
+                break;
+            default:
+                throw new RuntimeError(`Unknown statement type: ${statement.type}`);
         }
     }
 
@@ -40,11 +51,22 @@ class Interpreter {
 
     private evaluate(expression: Expression): any {
         // This will be implemented in subsequent steps
-        if (expression.type === 'Literal') {
-            return (expression as Literal).value;
-        } else {
-            throw new RuntimeError(`Unknown expression type: ${expression.type}`);
+        switch (expression.type) {
+            case 'Literal':
+                return (expression as Literal).value;
+            case 'Identifier':
+                return this.environment.get((expression as Identifier).name);
+            default:
+                throw new RuntimeError(`Unknown expression type: ${expression.type}`);
         }
+    }
+
+    private executeVarDeclaration(statement: VarDeclaration): void {
+        let value = null;
+        if (statement.initializer) {
+            value = this.evaluate(statement.initializer);
+        }
+        this.environment.define(statement.name, value);
     }
 
     private stringify(value: any): string {

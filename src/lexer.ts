@@ -10,10 +10,12 @@ export class Lexer {
   
   private keywords: Map<string, TokenType> = new Map([
     // Program Structure
-    ['chalti', TokenType.CHALTI_START],
-    ['start', TokenType.CHALTI_START],
-    ['bas', TokenType.BAS_KAR],
-    ['kar', TokenType.BAS_KAR],
+    ['chala', TokenType.CHALA_SURU_KARU],
+    ['suru', TokenType.CHALA_SURU_KARU],
+    ['karu', TokenType.CHALA_SURU_KARU],
+    ['bas', TokenType.BAS_RE_ATA],
+    ['re', TokenType.BAS_RE_ATA],
+    ['ata', TokenType.BAS_RE_ATA],
 
     // IO
     ['dakhava', TokenType.DAKHAVA],
@@ -169,42 +171,35 @@ export class Lexer {
 
   private handleIdentifierOrKeyword(): Token {
     const value = this.identifier();
-    
-    // Handle compound keywords
-    if (value === 'chalti' && this.peek() === ' ') {
+
+    // Handle compound keywords first, as they are more specific
+    if (value.toLowerCase() === 'chala' && this.peek() === ' ') {
       this.skipWhitespace();
-      if (this.matchWord('start')) {
-        return this.createToken(TokenType.CHALTI_START, 'chalti start');
+      if (this.matchWord('suru')) {
+        this.skipWhitespace();
+        if (this.matchWord('karu')) {
+          return this.createToken(TokenType.CHALA_SURU_KARU, 'chala suru karu');
+        }
       }
     }
-    
-    if (value === 'bas' && this.peek() === ' ') {
+
+    if (value.toLowerCase() === 'bas' && this.peek() === ' ') {
       this.skipWhitespace();
-      if (this.matchWord('kar')) {
-        return this.createToken(TokenType.BAS_KAR, 'bas kar');
+      if (this.matchWord('re')) {
+        this.skipWhitespace();
+        if (this.matchWord('ata')) {
+          return this.createToken(TokenType.BAS_RE_ATA, 'bas re ata');
+        }
       }
     }
-    
-    if (value === 'nahitar') {
-      return this.createToken(TokenType.NAHITAR, 'nahitar');
-    }
-    
-    if (value === 'thamb') {
-      return this.createToken(TokenType.THAMB, 'thamb');
-    }
-    
-    if (value === 'pudheja') {
-      return this.createToken(TokenType.PUDHE_JA, 'pudheja');
-    }
-    
-    if (value === 'paratde') {
-      return this.createToken(TokenType.PARAT_DE, 'paratde');
-    }
-    
+
     // Single word keywords
-    const tokenType = this.keywords.get(value) || TokenType.IDENTIFIER;
+    const lowerCaseValue = value.toLowerCase();
+    const tokenType = this.keywords.get(lowerCaseValue) || TokenType.IDENTIFIER;
     return this.createToken(tokenType, value);
   }
+
+
 
   private matchWord(word: string): boolean {
     const savedPosition = this.position;
@@ -296,7 +291,7 @@ export class Lexer {
   private skipWhitespace(): void {
     while (!this.isAtEnd()) {
       const char = this.peek();
-      if (char === ' ' || char === '\r' || char === '\t') {
+      if (char === ' ' || char === '\n' || char === '\t' || char === '\r') {
         this.advance();
       } else {
         break;

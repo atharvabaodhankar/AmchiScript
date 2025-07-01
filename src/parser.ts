@@ -1,4 +1,4 @@
-import { Token, TokenType, Literal, Program, Statement, Expression, PrintStatement } from './types';
+import { Token, TokenType, Program, Statement, VarDeclaration, Expression, PrintStatement, Literal, Identifier } from './types';
 
 export class Parser {
   private tokens: Token[];
@@ -12,28 +12,41 @@ export class Parser {
     while (this.check(TokenType.NEWLINE)) {
       this.advance();
     }
-    this.consume(TokenType.CHALTI_START, 'Expected "chalti start" at the beginning of the program.');
-    this.consume(TokenType.SEMICOLON, 'Expected ";" after "chalti start".');
+    this.consume(TokenType.CHALA_SURU_KARU, 'Expected "chala suru karu" at the beginning of the program.');
+    this.consume(TokenType.SEMICOLON, 'Expected ";" after "chala suru karu".');
 
     const body: Statement[] = [];
-    while (!this.check(TokenType.BAS_KAR) && !this.isAtEnd()) {
+    while (!this.check(TokenType.BAS_RE_ATA) && !this.isAtEnd()) {
       while (this.check(TokenType.NEWLINE)) {
         this.advance();
       }
-      if (this.check(TokenType.BAS_KAR) || this.isAtEnd()) {
+      if (this.check(TokenType.BAS_RE_ATA) || this.isAtEnd()) {
         break;
       }
       body.push(this.declaration());
     }
 
-    this.consume(TokenType.BAS_KAR, 'Expected "bas kar" at the end of the program.');
-    this.consume(TokenType.SEMICOLON, 'Expected ";" after "bas kar".');
+    this.consume(TokenType.BAS_RE_ATA, 'Expected "bas re ata" at the end of the program.');
+    this.consume(TokenType.SEMICOLON, 'Expected ";" after "bas re ata".');
 
     return { type: 'Program', body };
   }
 
   private declaration(): Statement {
+    if (this.match(TokenType.HE_AHE)) {
+      return this.varDeclaration();
+    }
     return this.statement();
+  }
+
+  private varDeclaration(): VarDeclaration {
+    const name = this.consume(TokenType.IDENTIFIER, 'Expected variable name.').value;
+    let initializer: Expression | null = null;
+    if (this.match(TokenType.ASSIGN)) {
+      initializer = this.expression();
+    }
+    this.consume(TokenType.SEMICOLON, 'Expected ";" after variable declaration.');
+    return { type: 'VarDeclaration', name, initializer };
   }
 
   private statement(): Statement {

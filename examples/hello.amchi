@@ -1,3 +1,9 @@
-chalti start;
-dakhava "Hello, World!";
-bas kar;
+chala suru karu;
+
+heAhe name = "";
+dakhava "What is your name?";
+name = ghye();
+
+dakhava "Hello, " + name + "! Welcome to AmchiScript.";
+
+bas re ata;

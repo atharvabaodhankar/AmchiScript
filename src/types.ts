@@ -2,8 +2,8 @@
 
 export enum TokenType {
   // Program Structure
-  CHALTI_START = 'CHALTI_START',
-  BAS_KAR = 'BAS_KAR',
+  CHALA_SURU_KARU = 'CHALA_SURU_KARU',
+  BAS_RE_ATA = 'BAS_RE_ATA',
 
   // IO
   DAKHAVA = 'DAKHAVA', // print
@@ -113,7 +113,7 @@ export interface PlaceholderStatement {
 
 export type Statement = 
   | Program
-  | VariableDeclaration
+  | VarDeclaration
   | Assignment
   | PrintStatement
   | BlockStatement
@@ -134,10 +134,10 @@ export type Expression =
   | MemberExpression;
 
 // Statements
-export interface VariableDeclaration {
-  type: 'VariableDeclaration';
-  identifier: string;
-  value: Expression;
+export interface VarDeclaration {
+  type: 'VarDeclaration';
+  name: string;
+  initializer: Expression | null;
 }
 
 export interface Assignment {

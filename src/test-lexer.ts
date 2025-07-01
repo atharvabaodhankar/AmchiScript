@@ -33,7 +33,7 @@ console.log('📋 Tokens generated:');
 console.log('='.repeat(50));
 
 tokens.forEach((token, index) => {
-  console.log(`${index.toString().padStart(2)}: ${token.type.padEnd(20)} | "${token.value}" | Line ${token.line}, Col ${token.column}`);
+  console.log(`${index.toString().padStart(2)}: ${token.type.padEnd(20)} | "${token.value.replace(/\n/g, '\\n')}" | Line ${token.line}, Col ${token.column});
 });
 
 console.log('\n✅ Lexer test completed!');
