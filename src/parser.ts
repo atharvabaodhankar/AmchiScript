@@ -37,7 +37,7 @@ export class Parser {
   }
 
   private statement(): Statement {
-    if (this.match(TokenType.BOLTA)) {
+    if (this.match(TokenType.DAKHAVA)) {
       return this.printStatement();
     }
     throw new Error(`Parse Error at line ${this.peek().line}, column ${this.peek().column}: Expected statement.`);

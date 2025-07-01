@@ -14,36 +14,45 @@ export class Lexer {
     ['start', TokenType.CHALTI_START],
     ['bas', TokenType.BAS_KAR],
     ['kar', TokenType.BAS_KAR],
-    
+
+    // IO
+    ['dakhava', TokenType.DAKHAVA],
+    ['ghye', TokenType.GHYE],
+
     // Variables
-    ['ahe', TokenType.AHE],
-    ['set', TokenType.SET],
-    
+    ['heahe', TokenType.HE_AHE],
+
+    // Functions
+    ['kaamkar', TokenType.KAAM_KAR],
+    ['paratde', TokenType.PARAT_DE],
+
+    // Control Flow
+    ['jar', TokenType.JAR],
+    ['nahitar', TokenType.NAHITAR],
+    ['punhakar', TokenType.PUNHA_KAR],
+    ['pratyeksathi', TokenType.PRATYEK_SATHI],
+    ['thamb', TokenType.THAMB],
+    ['pudheja', TokenType.PUDHE_JA],
+
+    // Data Structures
+    ['yadi', TokenType.YADI],
+
     // Literals
     ['khara', TokenType.KHARA],
     ['khota', TokenType.KHOTA],
-    ['nahi', TokenType.NAHI],
-    
-    // Output
-    ['bolta', TokenType.BOLTA],
-    
-    // Control Flow
-    ['jar', TokenType.JAR],
-    ['tar', TokenType.NAHI_TAR],
-    ['otherwise', TokenType.OTHERWISE],
-    ['joparyant', TokenType.JOPARYANT],
-    ['pratyek', TokenType.PRATYEK],
-    ['break', TokenType.BREAK_KAR],
-    ['continue', TokenType.CONTINUE_KAR],
-    
-    // Functions
-    ['function', TokenType.FUNCTION],
-    ['return', TokenType.RETURN_KAR],
-    
+    ['rikam', TokenType.RIKAM],
+
+    // Keywords for Operations
+    ['jod', TokenType.JOD],
+    ['moj', TokenType.MOJ],
+    ['mothaaheka', TokenType.MOTHA_AHE_KA],
+    ['lahanaheka', TokenType.LAHAN_AHE_KA],
+    ['sarkhaaheka', TokenType.SARKHA_AHE_KA],
+
     // Logical
     ['ani', TokenType.ANI],
-    ['kiva', TokenType.KIVA],
-    ['nako', TokenType.NAKO],
+    ['kimva', TokenType.KIMVA],
+    ['nahi', TokenType.NAHI],
   ]);
 
   constructor(input: string) {
@@ -176,32 +185,20 @@ export class Lexer {
       }
     }
     
-    if (value === 'nahi' && this.peek() === ' ') {
-      this.skipWhitespace();
-      if (this.matchWord('tar')) {
-        return this.createToken(TokenType.NAHI_TAR, 'nahi tar');
-      }
+    if (value === 'nahitar') {
+      return this.createToken(TokenType.NAHITAR, 'nahitar');
     }
     
-    if (value === 'break' && this.peek() === ' ') {
-      this.skipWhitespace();
-      if (this.matchWord('kar')) {
-        return this.createToken(TokenType.BREAK_KAR, 'break kar');
-      }
+    if (value === 'thamb') {
+      return this.createToken(TokenType.THAMB, 'thamb');
     }
     
-    if (value === 'continue' && this.peek() === ' ') {
-      this.skipWhitespace();
-      if (this.matchWord('kar')) {
-        return this.createToken(TokenType.CONTINUE_KAR, 'continue kar');
-      }
+    if (value === 'pudheja') {
+      return this.createToken(TokenType.PUDHE_JA, 'pudheja');
     }
     
-    if (value === 'return' && this.peek() === ' ') {
-      this.skipWhitespace();
-      if (this.matchWord('kar')) {
-        return this.createToken(TokenType.RETURN_KAR, 'return kar');
-      }
+    if (value === 'paratde') {
+      return this.createToken(TokenType.PARAT_DE, 'paratde');
     }
     
     // Single word keywords

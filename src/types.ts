@@ -2,71 +2,80 @@
 
 export enum TokenType {
   // Program Structure
-  CHALTI_START = 'CHALTI_START',     // chalti start
-  BAS_KAR = 'BAS_KAR',               // bas kar
-  
+  CHALTI_START = 'CHALTI_START',
+  BAS_KAR = 'BAS_KAR',
+
+  // IO
+  DAKHAVA = 'DAKHAVA', // print
+  GHYE = 'GHYE', // input
+
   // Variables
-  AHE = 'AHE',                       // ahe
-  SET = 'SET',                       // set
-  
+  HE_AHE = 'HE_AHE', // var/let
+
+  // Functions
+  KAAM_KAR = 'KAAM_KAR', // function
+  PARAT_DE = 'PARAT_DE', // return
+
+  // Control Flow
+  JAR = 'JAR', // if
+  NAHITAR = 'NAHITAR', // else
+  PUNHA_KAR = 'PUNHA_KAR', // loop/while
+  PRATYEK_SATHI = 'PRATYEK_SATHI', // for each
+  THAMB = 'THAMB', // break
+  PUDHE_JA = 'PUDHE_JA', // continue
+
+  // Data Structures
+  YADI = 'YADI', // list/array
+
   // Literals
   NUMBER = 'NUMBER',
   STRING = 'STRING',
   IDENTIFIER = 'IDENTIFIER',
-  
+
   // Boolean & Null
-  KHARA = 'KHARA',                   // khara (true)
-  KHOTA = 'KHOTA',                   // khota (false)
-  NAHI = 'NAHI',                     // nahi (null)
-  
-  // Output
-  BOLTA = 'BOLTA',                   // bolta (print)
-  
-  // Control Flow
-  JAR = 'JAR',                       // jar (if)
-  NAHI_TAR = 'NAHI_TAR',            // nahi tar (else if)
-  OTHERWISE = 'OTHERWISE',           // otherwise (else)
-  JOPARYANT = 'JOPARYANT',          // joparyant (while)
-  PRATYEK = 'PRATYEK',              // pratyek (for each)
-  BREAK_KAR = 'BREAK_KAR',          // break kar
-  CONTINUE_KAR = 'CONTINUE_KAR',    // continue kar
-  
-  // Functions
-  FUNCTION = 'FUNCTION',             // function
-  RETURN_KAR = 'RETURN_KAR',        // return kar
-  
-  // Operators
-  ASSIGN = 'ASSIGN',                 // =
-  PLUS = 'PLUS',                     // +
-  MINUS = 'MINUS',                   // -
-  MULTIPLY = 'MULTIPLY',             // *
-  DIVIDE = 'DIVIDE',                 // /
-  MODULO = 'MODULO',                 // %
-  
-  // Comparison
-  EQUAL = 'EQUAL',                   // ==
-  NOT_EQUAL = 'NOT_EQUAL',           // !=
-  GREATER = 'GREATER',               // >
-  LESS = 'LESS',                     // <
-  GREATER_EQUAL = 'GREATER_EQUAL',   // >=
-  LESS_EQUAL = 'LESS_EQUAL',         // <=
-  
+  KHARA = 'KHARA', // true
+  KHOTA = 'KHOTA', // false
+  RIKAM = 'RIKAM', // null
+
+  // Keywords for Operations
+  JOD = 'JOD', // add/append
+  MOJ = 'MOJ', // count/length
+  MOTHA_AHE_KA = 'MOTHA_AHE_KA', // is_greater
+  LAHAN_AHE_KA = 'LAHAN_AHE_KA', // is_less
+  SARKHA_AHE_KA = 'SARKHA_AHE_KA', // is_equal
+
   // Logical
-  ANI = 'ANI',                       // ani (and)
-  KIVA = 'KIVA',                     // kiva (or)
-  NAKO = 'NAKO',                     // nako (not)
-  
+  ANI = 'ANI', // and
+  KIMVA = 'KIMVA', // or
+  NAHI = 'NAHI', // not
+
+  // Operators
+  ASSIGN = 'ASSIGN', // =
+  PLUS = 'PLUS', // +
+  MINUS = 'MINUS', // -
+  MULTIPLY = 'MULTIPLY', // *
+  DIVIDE = 'DIVIDE', // /
+  MODULO = 'MODULO', // %
+
+  // Comparison
+  EQUAL = 'EQUAL', // ==
+  NOT_EQUAL = 'NOT_EQUAL', // !=
+  GREATER = 'GREATER', // >
+  LESS = 'LESS', // <
+  GREATER_EQUAL = 'GREATER_EQUAL', // >=
+  LESS_EQUAL = 'LESS_EQUAL', // <=
+
   // Punctuation
-  SEMICOLON = 'SEMICOLON',           // ;
-  COMMA = 'COMMA',                   // ,
-  LPAREN = 'LPAREN',                // (
-  RPAREN = 'RPAREN',                // )
-  LBRACE = 'LBRACE',                // {
-  RBRACE = 'RBRACE',                // }
-  LBRACKET = 'LBRACKET',            // [
-  RBRACKET = 'RBRACKET',            // ]
-  DOT = 'DOT',                      // .
-  
+  SEMICOLON = 'SEMICOLON', // ;
+  COMMA = 'COMMA', // ,
+  LPAREN = 'LPAREN', // (
+  RPAREN = 'RPAREN', // )
+  LBRACE = 'LBRACE', // {
+  RBRACE = 'RBRACE', // }
+  LBRACKET = 'LBRACKET', // [
+  RBRACKET = 'RBRACKET', // ]
+  DOT = 'DOT', // .
+
   // Special
   EOF = 'EOF',
   NEWLINE = 'NEWLINE',
