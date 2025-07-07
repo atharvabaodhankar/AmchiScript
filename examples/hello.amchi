@@ -1,7 +1,7 @@
 chala suru karu;
 heAhe i = 0;
-punhakar (i < 3) {
-    dakhava "Count: " + i;
+javastor (i < 3) {
+    dakhava "Count: ", i;
     i = i + 1;
 }
 bas re ata;

@@ -32,6 +32,7 @@ export class Lexer {
     ['jar', TokenType.JAR],
     ['nahitar', TokenType.NAHITAR],
     ['punhakar', TokenType.PUNHA_KAR],
+    ['javastor', TokenType.PUNHA_KAR],
     ['pratyeksathi', TokenType.PRATYEK_SATHI],
     ['thamb', TokenType.THAMB],
     ['pudheja', TokenType.PUDHE_JA],
