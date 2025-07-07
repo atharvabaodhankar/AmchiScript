@@ -1,9 +1,7 @@
 chala suru karu;
-
-heAhe name = "";
-dakhava "What is your name?";
-name = ghye();
-
-dakhava "Hello, " + name + "! Welcome to AmchiScript.";
-
+heAhe i = 0;
+punhakar (i < 3) {
+    dakhava "Count: " + i;
+    i = i + 1;
+}
 bas re ata;

@@ -48,10 +48,9 @@ class Interpreter {
     }
 
     private executePrintStatement(statement: PrintStatement): void {
-        // Assuming bolta only takes one expression for now
         if (statement.expressions.length > 0) {
-            const value = this.evaluate(statement.expressions[0]);
-            console.log(this.stringify(value));
+            const values = statement.expressions.map(expr => this.evaluate(expr));
+            console.log(values.map(this.stringify).join(''));
         } else {
             throw new RuntimeError('PrintStatement expects at least one expression.');
         }
