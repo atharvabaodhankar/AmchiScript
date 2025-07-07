@@ -39,6 +39,9 @@ class Interpreter {
             case 'IfStatement':
                 this.executeIfStatement(statement as IfStatement);
                 break;
+            case 'WhileStatement':
+                this.executeWhileStatement(statement as any);
+                break;
             case 'BlockStatement':
                 this.executeBlockStatement(statement as BlockStatement);
                 break;
@@ -81,6 +84,12 @@ class Interpreter {
     private executeAssignment(statement: Assignment): void {
         const value = this.evaluate(statement.value);
         this.environment.set(statement.identifier, value);
+    }
+
+    private executeWhileStatement(statement: any): void {
+        while (this.evaluate(statement.condition)) {
+            this.execute(statement.body);
+        }
     }
 
     private evaluate(expression: Expression): any {

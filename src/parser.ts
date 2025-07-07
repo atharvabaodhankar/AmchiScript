@@ -59,6 +59,9 @@ export class Parser {
     if (this.match(TokenType.JAR)) {
       return this.ifStatement();
     }
+    if (this.match(TokenType.PUNHA_KAR)) {
+      return this.whileStatement();
+    }
     throw new Error(`Parse Error at line ${this.peek().line}, column ${this.peek().column}: Expected statement.`);
   }
 
@@ -203,5 +206,18 @@ export class Parser {
     const value = this.expression();
     this.consume(TokenType.SEMICOLON, 'Expected ";" after assignment.');
     return { type: 'Assignment', identifier, value };
+  }
+
+  private whileStatement(): Statement {
+    this.consume(TokenType.LPAREN, 'Expected "(" after while keyword.');
+    const condition = this.expression();
+    this.consume(TokenType.RPAREN, 'Expected ")" after while condition.');
+    this.consume(TokenType.LBRACE, 'Expected "{" before while body.');
+    const body: Statement[] = [];
+    while (!this.check(TokenType.RBRACE) && !this.isAtEnd()) {
+      body.push(this.declaration());
+    }
+    this.consume(TokenType.RBRACE, 'Expected "}" after while body.');
+    return { type: 'WhileStatement', condition, body: { type: 'BlockStatement', body } };
   }
 }
