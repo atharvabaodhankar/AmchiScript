@@ -13,4 +13,11 @@ export class Environment {
         }
         throw new RuntimeError(`Undefined variable '${name}'.`);
     }
+
+    set(name: string, value: any): void {
+        if (!this.values.has(name)) {
+            throw new RuntimeError(`Cannot assign to undefined variable '${name}'.`);
+        }
+        this.values.set(name, value);
+    }
 }

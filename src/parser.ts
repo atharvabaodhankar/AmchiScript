@@ -36,6 +36,9 @@ export class Parser {
     if (this.match(TokenType.HE_AHE)) {
       return this.varDeclaration();
     }
+    if (this.check(TokenType.IDENTIFIER) && this.checkNext(TokenType.ASSIGN)) {
+      return this.assignmentStatement();
+    }
     return this.statement();
   }
 
@@ -125,12 +128,23 @@ export class Parser {
     }
 
     if (this.match(TokenType.IDENTIFIER)) {
-      return { type: 'Identifier', name: this.previous().value } as Identifier;
+      const id = { type: 'Identifier', name: this.previous().value } as Identifier;
+      if (this.match(TokenType.LPAREN)) {
+        const args: Expression[] = [];
+        if (!this.check(TokenType.RPAREN)) {
+          do {
+            args.push(this.expression());
+          } while (this.match(TokenType.COMMA));
+        }
+        this.consume(TokenType.RPAREN, 'Expected ")" after function arguments.');
+        return { type: 'CallExpression', callee: id, arguments: args };
+      }
+      return id;
     }
 
     if (this.match(TokenType.LPAREN)) {
       const expr = this.expression();
-      this.consume(TokenType.RPAREN, 'Expected \')\' after expression.');
+      this.consume(TokenType.RPAREN, 'Expected ")" after expression.');
       return expr;
     }
 
@@ -176,5 +190,18 @@ export class Parser {
       return this.advance();
     }
     throw new Error(`Parse Error at line ${this.peek().line}, column ${this.peek().column}: ${message}`);
+  }
+
+  private checkNext(type: TokenType): boolean {
+    if (this.current + 1 >= this.tokens.length) return false;
+    return this.tokens[this.current + 1].type === type;
+  }
+
+  private assignmentStatement(): Statement {
+    const identifier = this.consume(TokenType.IDENTIFIER, 'Expected variable name.').value;
+    this.consume(TokenType.ASSIGN, 'Expected "=" in assignment.');
+    const value = this.expression();
+    this.consume(TokenType.SEMICOLON, 'Expected ";" after assignment.');
+    return { type: 'Assignment', identifier, value };
   }
 }

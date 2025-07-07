@@ -1,5 +1,5 @@
 import { RuntimeError } from './errors';
-import { Program, Statement, VarDeclaration, PrintStatement, Expression, Literal, Identifier, IfStatement, BinaryExpression, BlockStatement } from './types';
+import { Program, Statement, VarDeclaration, PrintStatement, Expression, Literal, Identifier, IfStatement, BinaryExpression, BlockStatement, Assignment, CallExpression } from './types';
 
 import { Environment } from './environment';
 
@@ -26,10 +26,12 @@ class Interpreter {
     }
 
     private execute(statement: Statement): void {
-        // This will be implemented in subsequent steps
         switch (statement.type) {
             case 'VarDeclaration':
                 this.executeVarDeclaration(statement as VarDeclaration);
+                break;
+            case 'Assignment':
+                this.executeAssignment(statement as Assignment);
                 break;
             case 'PrintStatement':
                 this.executePrintStatement(statement as PrintStatement);
@@ -55,24 +57,6 @@ class Interpreter {
         }
     }
 
-    private evaluate(expression: Expression): any {
-        // This will be implemented in subsequent steps
-        switch (expression.type) {
-            case 'Literal':
-                const literal = expression as Literal;
-                if (typeof literal.value === 'string' && !isNaN(Number(literal.value))) {
-                    return Number(literal.value);
-                }
-                return literal.value;
-            case 'Identifier':
-                return this.environment.get((expression as Identifier).name);
-            case 'BinaryExpression':
-                return this.evaluateBinaryExpression(expression as BinaryExpression);
-            default:
-                throw new RuntimeError(`Unknown expression type: ${expression.type}`);
-        }
-    }
-
     private executeVarDeclaration(statement: VarDeclaration): void {
         let value = null;
         if (statement.initializer) {
@@ -95,6 +79,30 @@ class Interpreter {
         }
     }
 
+    private executeAssignment(statement: Assignment): void {
+        const value = this.evaluate(statement.value);
+        this.environment.set(statement.identifier, value);
+    }
+
+    private evaluate(expression: Expression): any {
+        switch (expression.type) {
+            case 'Literal':
+                const literal = expression as Literal;
+                if (typeof literal.value === 'string' && !isNaN(Number(literal.value))) {
+                    return Number(literal.value);
+                }
+                return literal.value;
+            case 'Identifier':
+                return this.environment.get((expression as Identifier).name);
+            case 'BinaryExpression':
+                return this.evaluateBinaryExpression(expression as BinaryExpression);
+            case 'CallExpression':
+                return this.evaluateCallExpression(expression as CallExpression);
+            default:
+                throw new RuntimeError(`Unknown expression type: ${expression.type}`);
+        }
+    }
+
     private evaluateBinaryExpression(expression: BinaryExpression): any {
         const left = this.evaluate(expression.left);
         const right = this.evaluate(expression.right);
@@ -114,6 +122,24 @@ class Interpreter {
             default:
                 throw new RuntimeError(`Unknown binary operator: ${expression.operator}`);
         }
+    }
+
+    private evaluateCallExpression(expression: CallExpression): any {
+        // Only support built-in functions for now
+        if (expression.callee.type === 'Identifier') {
+            const name = expression.callee.name;
+            if (name === 'ghye') {
+                // Node.js input sync
+                const readlineSync = require('readline-sync');
+                return readlineSync.question('');
+            }
+            if (name === 'dakhava') {
+                const args = expression.arguments.map(arg => this.evaluate(arg));
+                console.log(...args);
+                return null;
+            }
+        }
+        throw new RuntimeError(`Unknown function: ${expression.callee.type === 'Identifier' ? expression.callee.name : 'non-identifier'}`);
     }
 
     private stringify(value: any): string {

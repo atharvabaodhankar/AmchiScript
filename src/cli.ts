@@ -7,6 +7,9 @@ export function run(source: string) {
   const lexer = new Lexer(source);
   const tokens = lexer.tokenize();
 
+  // Debug: print tokens
+  console.log('TOKENS:', tokens.map(t => `${t.type}(${t.value})`).join(' '));
+
   const parser = new Parser(tokens);
   const ast = parser.parse();
 

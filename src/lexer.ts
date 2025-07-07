@@ -199,8 +199,6 @@ export class Lexer {
     return this.createToken(tokenType, value);
   }
 
-
-
   private matchWord(word: string): boolean {
     const savedPosition = this.position;
     const savedLine = this.line;
@@ -232,32 +230,34 @@ export class Lexer {
   private string(quote: string): Token {
     let value = '';
     this.advance(); // Skip opening quote
-    
-    while (!this.isAtEnd() && this.peek() !== quote) {
-      if (this.peek() === '\\') {
+    while (!this.isAtEnd()) {
+      const char = this.peek();
+      if (char === quote) {
+        this.advance(); // Skip closing quote
+        return this.createToken(TokenType.STRING, value);
+      }
+      if (char === '\n' || char === '\r') {
+        throw new Error(`Unterminated string at line ${this.line}`);
+      }
+      if (char === '\\') {
         this.advance();
-        // Handle escape sequences
-        switch (this.peek()) {
+        const nextChar = this.peek();
+        switch (nextChar) {
           case 'n': value += '\n'; break;
           case 't': value += '\t'; break;
           case 'r': value += '\r'; break;
           case '\\': value += '\\'; break;
           case '"': value += '"'; break;
           case "'": value += "'"; break;
-          default: value += this.peek(); break;
+          default: value += nextChar; break;
         }
+        this.advance();
       } else {
-        value += this.peek();
+        value += char;
+        this.advance();
       }
-      this.advance();
     }
-    
-    if (this.isAtEnd()) {
-      throw new Error(`Unterminated string at line ${this.line}`);
-    }
-    
-    this.advance(); // Skip closing quote
-    return this.createToken(TokenType.STRING, value);
+    throw new Error(`Unterminated string at line ${this.line}`);
   }
 
   private number(): Token {
