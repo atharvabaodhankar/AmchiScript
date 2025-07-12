@@ -202,23 +202,28 @@ export class Parser {
   }
 
   private assignmentStatement(): Statement {
+    console.log('DEBUG: Entering assignmentStatement at token:', this.peek());
     const identifier = this.consume(TokenType.IDENTIFIER, 'Expected variable name.').value;
     this.consume(TokenType.ASSIGN, 'Expected "=" in assignment.');
     const value = this.expression();
     this.consume(TokenType.SEMICOLON, 'Expected ";" after assignment.');
+    console.log('DEBUG: Exiting assignmentStatement at token:', this.peek());
     return { type: 'Assignment', identifier, value };
   }
 
   private whileStatement(): Statement {
+    console.log('DEBUG: Entering whileStatement at token:', this.peek());
     this.consume(TokenType.LPAREN, 'Expected "(" after while keyword.');
     const condition = this.expression();
     this.consume(TokenType.RPAREN, 'Expected ")" after while condition.');
     this.consume(TokenType.LBRACE, 'Expected "{" before while body.');
     const body: Statement[] = [];
     while (!this.check(TokenType.RBRACE) && !this.isAtEnd()) {
+      console.log('DEBUG: whileStatement body, current token:', this.peek());
       body.push(this.declaration());
     }
     this.consume(TokenType.RBRACE, 'Expected "}" after while body.');
+    console.log('DEBUG: Exiting whileStatement at token:', this.peek());
     return { type: 'WhileStatement', condition, body: { type: 'BlockStatement', body } };
   }
 }
