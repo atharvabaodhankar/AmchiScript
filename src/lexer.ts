@@ -292,7 +292,14 @@ export class Lexer {
   private skipWhitespace(): void {
     while (!this.isAtEnd()) {
       const char = this.peek();
-      if (char === ' ' || char === '\n' || char === '\t' || char === '\r') {
+      if (char === ' ' || char === '\t') {
+        this.advance();
+      } else if (char === '\r') {
+        this.advance();
+        if (this.peek() === '\n') {
+          this.advance();
+        }
+      } else if (char === '\n') {
         this.advance();
       } else {
         break;
