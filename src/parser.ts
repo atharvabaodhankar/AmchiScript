@@ -36,6 +36,7 @@ export class Parser {
     if (this.match(TokenType.HE_AHE)) {
       return this.varDeclaration();
     }
+    // Look ahead for assignment: IDENTIFIER ASSIGN ...
     if (this.check(TokenType.IDENTIFIER) && this.checkNext(TokenType.ASSIGN)) {
       return this.assignmentStatement();
     }
@@ -162,8 +163,8 @@ export class Parser {
     return this.tokens[this.current];
   }
 
-  private previous(): Token {
-    return this.tokens[this.current - 1];
+  private previous(offset = 1): Token {
+    return this.tokens[this.current - offset];
   }
 
   private advance(): Token {
