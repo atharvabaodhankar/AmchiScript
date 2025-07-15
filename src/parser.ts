@@ -106,19 +106,56 @@ export class Parser {
   }
 
   private expression(): Expression {
-    return this.comparison();
+    return this.equality();
+  }
+
+  private equality(): Expression {
+    let expr = this.comparison();
+    while (this.match(TokenType.EQUAL, TokenType.NOT_EQUAL)) {
+      const operator = this.previous().value;
+      const right = this.comparison();
+      expr = { type: 'BinaryExpression', left: expr, operator, right } as BinaryExpression;
+    }
+    return expr;
   }
 
   private comparison(): Expression {
-    let expr = this.primary();
-
-    while (this.match(TokenType.GREATER, TokenType.GREATER_EQUAL, TokenType.LESS, TokenType.LESS_EQUAL, TokenType.EQUAL, TokenType.NOT_EQUAL)) {
-      const operator = this.previous();
-      const right = this.primary();
-      expr = { type: 'BinaryExpression', left: expr, operator: operator.value, right: right } as BinaryExpression;
+    let expr = this.term();
+    while (this.match(TokenType.GREATER, TokenType.GREATER_EQUAL, TokenType.LESS, TokenType.LESS_EQUAL)) {
+      const operator = this.previous().value;
+      const right = this.term();
+      expr = { type: 'BinaryExpression', left: expr, operator, right } as BinaryExpression;
     }
-
     return expr;
+  }
+
+  private term(): Expression {
+    let expr = this.factor();
+    while (this.match(TokenType.PLUS, TokenType.MINUS)) {
+      const operator = this.previous().value;
+      const right = this.factor();
+      expr = { type: 'BinaryExpression', left: expr, operator, right } as BinaryExpression;
+    }
+    return expr;
+  }
+
+  private factor(): Expression {
+    let expr = this.unary();
+    while (this.match(TokenType.MULTIPLY, TokenType.DIVIDE, TokenType.MODULO)) {
+      const operator = this.previous().value;
+      const right = this.unary();
+      expr = { type: 'BinaryExpression', left: expr, operator, right } as BinaryExpression;
+    }
+    return expr;
+  }
+
+  private unary(): Expression {
+    if (this.match(TokenType.MINUS, TokenType.NOT_EQUAL)) {
+      const operator = this.previous().value;
+      const right = this.unary();
+      return { type: 'UnaryExpression', operator, argument: right };
+    }
+    return this.primary();
   }
 
   private primary(): Expression {

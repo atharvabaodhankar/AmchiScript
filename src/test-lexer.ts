@@ -3,25 +3,23 @@
 import { Lexer } from './lexer';
 
 const testCode = `
-chalti start
+chala suru karu;
 
 // This is a comment
-ahe naam = "Rahul"
-ahe age = 25
-ahe isStudent = khara
+heAhe naam = "Rahul";
+heAhe age = 25;
+heAhe isStudent = khara;
 
-bolta "Hello, my name is", naam
-bolta "Age:", age
+dakhava "Hello, my name is ", naam;
+dakhava "Age:", age;
 
-jar age >= 18 {
-    bolta "Adult ahe"
-} nahi tar age < 13 {
-    bolta "Child ahe"  
-} otherwise {
-    bolta "Teen ahe"
+jar (age >= 18) {
+    dakhava "Adult ahe";
+} nahitar {
+    dakhava "Not an adult";
 }
 
-bas kar
+bas re ata;
 `;
 
 console.log('🚀 Testing AmchiScript Lexer...\n');
@@ -33,7 +31,7 @@ console.log('📋 Tokens generated:');
 console.log('='.repeat(50));
 
 tokens.forEach((token, index) => {
-  console.log(`${index.toString().padStart(2)}: ${token.type.padEnd(20)} | "${token.value.replace(/\n/g, '\\n')}" | Line ${token.line}, Col ${token.column});
+  console.log(`${index.toString().padStart(2)}: ${token.type.padEnd(20)} | "${token.value.replace(/\n/g, '\\n')}" | Line ${token.line}, Col ${token.column}`);
 });
 
 console.log('\n✅ Lexer test completed!');
