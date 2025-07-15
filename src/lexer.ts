@@ -19,7 +19,6 @@ export class Lexer {
 
     // IO
     ['dakhava', TokenType.DAKHAVA],
-    ['ghye', TokenType.GHYE],
 
     // Variables
     ['heahe', TokenType.HE_AHE],

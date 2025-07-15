@@ -1,0 +1,10 @@
+chala suru karu;
+
+heAhe num = 7;
+jar ((num % 2) == 0) {
+  dakhava num, " he ek sam anka aahe.";
+} nahitar {
+  dakhava num, " he ek visam anka aahe.";
+}
+
+bas re ata; 

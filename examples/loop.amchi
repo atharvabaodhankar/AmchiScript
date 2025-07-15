@@ -1,0 +1,10 @@
+chala suru karu;
+
+heAhe count = 1;
+
+punhaKar (count <= 5) {
+  dakhava "Number: ", count;
+  count = count + 1;
+}
+
+bas re ata; 

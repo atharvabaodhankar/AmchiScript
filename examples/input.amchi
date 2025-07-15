@@ -1,0 +1,8 @@
+chala suru karu;
+
+heAhe name = "";
+dakhava "Tuzhe naav kaay?";
+name = ghye();
+dakhava "Namaskar, ", name, "!";
+
+bas re ata; 
