@@ -69,28 +69,26 @@ export class Parser {
   private ifStatement(): IfStatement {
     this.consume(TokenType.LPAREN, 'Expected \'(\' after \'jar\'.');
     const condition = this.expression();
-    this.consume(TokenType.RPAREN, 'Expected \')\' after if condition.');
+    this.consume(TokenType.RPAREN, 'Expected \'\)\' after if condition.');
 
     this.consume(TokenType.LBRACE, 'Expected \'{\' before if block.');
     const consequent: Statement[] = [];
     while (!this.check(TokenType.RBRACE) && !this.isAtEnd()) {
       consequent.push(this.declaration());
     }
-    this.consume(TokenType.RBRACE, 'Expected \'}\' after if block.');
+    this.consume(TokenType.RBRACE, 'Expected } after if block.');
 
     let alternate: Statement | undefined;
-    if (this.match(TokenType.NAHITAR)) {
-      if (this.match(TokenType.JAR)) {
-        alternate = this.ifStatement(); // Else if
-      } else {
-        this.consume(TokenType.LBRACE, 'Expected \'{\' before else block.');
-        const elseBody: Statement[] = [];
-        while (!this.check(TokenType.RBRACE) && !this.isAtEnd()) {
-          elseBody.push(this.declaration());
-        }
-        this.consume(TokenType.RBRACE, 'Expected \'}\' after else block.');
-        alternate = { type: 'BlockStatement', body: elseBody };
+    if (this.match(TokenType.NAHITAR_JAR)) {
+      alternate = this.ifStatement(); // else if
+    } else if (this.match(TokenType.NAHITAR)) {
+      this.consume(TokenType.LBRACE, 'Expected \'{\' before else block.');
+      const elseBody: Statement[] = [];
+      while (!this.check(TokenType.RBRACE) && !this.isAtEnd()) {
+        elseBody.push(this.declaration());
       }
+      this.consume(TokenType.RBRACE, 'Expected } after else block.');
+      alternate = { type: 'BlockStatement', body: elseBody };
     }
 
     return { type: 'IfStatement', condition, consequent: { type: 'BlockStatement', body: consequent }, alternate };

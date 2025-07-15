@@ -19,6 +19,7 @@ export enum TokenType {
   // Control Flow
   JAR = 'JAR', // if
   NAHITAR = 'NAHITAR', // else
+  NAHITAR_JAR = 'NAHITAR_JAR', // else if
   PUNHA_KAR = 'PUNHA_KAR', // loop/while
   PRATYEK_SATHI = 'PRATYEK_SATHI', // for each
   THAMB = 'THAMB', // break

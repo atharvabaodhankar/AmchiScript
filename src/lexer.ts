@@ -30,6 +30,7 @@ export class Lexer {
     // Control Flow
     ['jar', TokenType.JAR],
     ['nahitar', TokenType.NAHITAR],
+    ['nahitarjar', TokenType.NAHITAR_JAR], // else if
     ['punhakar', TokenType.PUNHA_KAR],
     ['javastor', TokenType.PUNHA_KAR],
     ['pratyeksathi', TokenType.PRATYEK_SATHI],
