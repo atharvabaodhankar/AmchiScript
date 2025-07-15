@@ -63,6 +63,14 @@ export class Parser {
     if (this.match(TokenType.PUNHA_KAR)) {
       return this.whileStatement();
     }
+    if (this.match(TokenType.THAMB)) {
+      this.consume(TokenType.SEMICOLON, 'Expected ";" after break.');
+      return { type: 'BreakStatement' };
+    }
+    if (this.match(TokenType.PUDHE_JA)) {
+      this.consume(TokenType.SEMICOLON, 'Expected ";" after continue.');
+      return { type: 'ContinueStatement' };
+    }
     throw new Error(`Parse Error at line ${this.peek().line}, column ${this.peek().column}: Expected statement.`);
   }
 

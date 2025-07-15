@@ -34,8 +34,8 @@ export class Lexer {
     ['punhakar', TokenType.PUNHA_KAR],
     ['javastor', TokenType.PUNHA_KAR],
     ['pratyeksathi', TokenType.PRATYEK_SATHI],
-    ['thamb', TokenType.THAMB],
-    ['pudheja', TokenType.PUDHE_JA],
+    ['thamb', TokenType.THAMB], // break
+    ['pudheja', TokenType.PUDHE_JA], // continue
 
     // Data Structures
     ['yadi', TokenType.YADI],

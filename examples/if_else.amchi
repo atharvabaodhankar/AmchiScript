@@ -1,11 +1,3 @@
 chala suru karu;
-heAhe num = 10;
 
-jar (num > 15) {
-  dakhava "Number is greater than 15";
-} nahitarjar (num > 5) {
-  dakhava "Number is greater than 5 but not more than 15";
-} nahitar {
-  dakhava "Number is 5 or less";
-}
 bas re ata;

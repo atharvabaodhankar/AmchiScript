@@ -1,10 +1,16 @@
 chala suru karu;
 
-heAhe count = 1;
+heAhe count = 0;
 
-punhaKar (count <= 5) {
-  dakhava "Number: ", count;
+punhaKar (count < 10) {
   count = count + 1;
+  jar (count == 3) {
+    pudheja;
+  }
+  jar (count == 7) {
+    thamb;
+  }
+  dakhava "Number: ", count;
 }
 
 bas re ata; 

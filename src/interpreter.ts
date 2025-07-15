@@ -3,6 +3,9 @@ import { Program, Statement, VarDeclaration, PrintStatement, Expression, Literal
 
 import { Environment } from './environment';
 
+class BreakException {}
+class ContinueException {}
+
 class Interpreter {
     constructor() {
         this.environment = new Environment();
@@ -45,6 +48,10 @@ class Interpreter {
             case 'BlockStatement':
                 this.executeBlockStatement(statement as BlockStatement);
                 break;
+            case 'BreakStatement':
+                throw new BreakException();
+            case 'ContinueStatement':
+                throw new ContinueException();
             default:
                 throw new RuntimeError(`Unknown statement type: ${statement.type}`);
         }
@@ -88,7 +95,17 @@ class Interpreter {
 
     private executeWhileStatement(statement: any): void {
         while (this.evaluate(statement.condition)) {
-            this.execute(statement.body);
+            try {
+                this.execute(statement.body);
+            } catch (e) {
+                if (e instanceof BreakException) {
+                    break;
+                } else if (e instanceof ContinueException) {
+                    continue;
+                } else {
+                    throw e;
+                }
+            }
         }
     }
 
