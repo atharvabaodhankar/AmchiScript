@@ -73,6 +73,7 @@ bas re ata;
 | `ani`            | `and`                      | The logical AND operator.                                    |
 | `kimva`          | `or`                       | The logical OR operator.                                     |
 | `nahi`           | `not`                      | The logical NOT operator.                                    |
+| `nahitarjar`      | `else if`                   | The `else if` part of a conditional statement.                |
 
 ### Sample Programs
 
@@ -142,6 +143,70 @@ heAhe count = 1;
 punhaKar (count <= 5) {
   dakhava "Iteration: " + count;
   count = count + 1;
+}
+
+bas re ata;
+```
+
+#### 5. Else If (nahitarjar)
+
+```amchi
+chala suru karu;
+heAhe num = 10;
+
+jar (num > 15) {
+  dakhava "Number is greater than 15";
+} nahitarjar (num > 5) {
+  dakhava "Number is greater than 5 but not more than 15";
+} nahitar {
+  dakhava "Number is 5 or less";
+}
+
+bas re ata;
+```
+
+#### 6. Break and Continue
+
+```amchi
+chala suru karu;
+heAhe count = 0;
+
+punhaKar (count < 10) {
+  count = count + 1;
+  jar (count == 3) {
+    pudheja;
+  }
+  jar (count == 7) {
+    thamb;
+  }
+  dakhava "Number: ", count;
+}
+
+bas re ata;
+```
+
+#### 7. Logical Operators
+
+```amchi
+chala suru karu;
+heAhe num = 7;
+heAhe flag = khara;
+
+// Logical AND
+jar ((num > 0) ani (num < 10)) {
+  dakhava num, " is between 1 and 9.";
+}
+
+// Logical OR
+jar ((num < 0) kimva (num > 5)) {
+  dakhava num, " is less than 0 or greater than 5.";
+}
+
+// Logical NOT
+jar (nahi flag) {
+  dakhava "Flag is false.";
+} nahitar {
+  dakhava "Flag is true.";
 }
 
 bas re ata;
