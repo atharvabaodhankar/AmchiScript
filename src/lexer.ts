@@ -24,8 +24,8 @@ export class Lexer {
     ['heahe', TokenType.HE_AHE],
 
     // Functions
-    ['kaamkar', TokenType.KAAM_KAR],
-    ['paratde', TokenType.PARAT_DE],
+    ['kaamkar', TokenType.KAAM_KAR], // function
+    ['paratde', TokenType.PARAT_DE], // return
 
     // Control Flow
     ['jar', TokenType.JAR],

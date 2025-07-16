@@ -8,6 +8,12 @@ javastor (i < 3) {
   }
 }
 
+kaamkar gunakar(a, b) {
+  paratde a * b;
+}
+
+dakhava "2 x 3 = ", gunakar(2, 3);
+
 heAhe num = 10;
 
 jar (num > 15) {

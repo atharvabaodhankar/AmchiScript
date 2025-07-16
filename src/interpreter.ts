@@ -5,6 +5,10 @@ import { Environment } from './environment';
 
 class BreakException {}
 class ContinueException {}
+class ReturnException {
+    value: any;
+    constructor(value: any) { this.value = value; }
+}
 
 class Interpreter {
     constructor() {
@@ -52,6 +56,11 @@ class Interpreter {
                 throw new BreakException();
             case 'ContinueStatement':
                 throw new ContinueException();
+            case 'FunctionDeclaration':
+                this.environment.define(statement.name, statement);
+                break;
+            case 'ReturnStatement':
+                throw new ReturnException(statement.value ? this.evaluate(statement.value) : undefined);
             default:
                 throw new RuntimeError(`Unknown statement type: ${statement.type}`);
         }
@@ -177,6 +186,33 @@ class Interpreter {
                 const args = expression.arguments.map(arg => this.evaluate(arg));
                 console.log(...args);
                 return null;
+            }
+            // User-defined function
+            const func = this.environment.get(name);
+            if (func && func.type === 'FunctionDeclaration') {
+                if (expression.arguments.length !== func.parameters.length) {
+                    throw new RuntimeError(`Function '${name}' expects ${func.parameters.length} arguments, got ${expression.arguments.length}.`);
+                }
+                // Create new environment for function call
+                const previousEnv = this.environment;
+                const localEnv = new Environment();
+                this.environment = localEnv;
+                // Bind parameters
+                for (let i = 0; i < func.parameters.length; i++) {
+                    localEnv.define(func.parameters[i], this.evaluate(expression.arguments[i]));
+                }
+                let result = undefined;
+                try {
+                    this.execute(func.body);
+                } catch (e) {
+                    if (e instanceof ReturnException) {
+                        result = e.value;
+                    } else {
+                        throw e;
+                    }
+                }
+                this.environment = previousEnv;
+                return result;
             }
         }
         throw new RuntimeError(`Unknown function: ${expression.callee.type === 'Identifier' ? expression.callee.name : 'non-identifier'}`);

@@ -36,11 +36,33 @@ export class Parser {
     if (this.match(TokenType.HE_AHE)) {
       return this.varDeclaration();
     }
+    if (this.match(TokenType.KAAM_KAR)) {
+      return this.functionDeclaration();
+    }
     // Look ahead for assignment: IDENTIFIER ASSIGN ...
     if (this.check(TokenType.IDENTIFIER) && this.checkNext(TokenType.ASSIGN)) {
       return this.assignmentStatement();
     }
     return this.statement();
+  }
+
+  private functionDeclaration(): Statement {
+    const name = this.consume(TokenType.IDENTIFIER, 'Expected function name.').value;
+    this.consume(TokenType.LPAREN, 'Expected "(" after function name.');
+    const parameters: string[] = [];
+    if (!this.check(TokenType.RPAREN)) {
+      do {
+        parameters.push(this.consume(TokenType.IDENTIFIER, 'Expected parameter name.').value);
+      } while (this.match(TokenType.COMMA));
+    }
+    this.consume(TokenType.RPAREN, 'Expected ")" after parameters.');
+    this.consume(TokenType.LBRACE, 'Expected "{" before function body.');
+    const body: Statement[] = [];
+    while (!this.check(TokenType.RBRACE) && !this.isAtEnd()) {
+      body.push(this.declaration());
+    }
+    this.consume(TokenType.RBRACE, 'Expected "}" after function body.');
+    return { type: 'FunctionDeclaration', name, parameters, body: { type: 'BlockStatement', body } };
   }
 
   private varDeclaration(): VarDeclaration {
@@ -62,6 +84,9 @@ export class Parser {
     }
     if (this.match(TokenType.PUNHA_KAR)) {
       return this.whileStatement();
+    }
+    if (this.match(TokenType.PARAT_DE)) {
+      return this.returnStatement();
     }
     if (this.match(TokenType.THAMB)) {
       this.consume(TokenType.SEMICOLON, 'Expected ";" after break.');
@@ -288,5 +313,14 @@ export class Parser {
     this.consume(TokenType.RBRACE, 'Expected "}" after while body.');
     console.log('DEBUG: Exiting whileStatement at token:', this.peek());
     return { type: 'WhileStatement', condition, body: { type: 'BlockStatement', body } };
+  }
+
+  private returnStatement(): Statement {
+    let value: Expression | undefined = undefined;
+    if (!this.check(TokenType.SEMICOLON)) {
+      value = this.expression();
+    }
+    this.consume(TokenType.SEMICOLON, 'Expected ";" after return value.');
+    return { type: 'ReturnStatement', value };
   }
 }
