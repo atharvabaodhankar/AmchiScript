@@ -121,6 +121,8 @@ class Interpreter {
                 return this.environment.get((expression as Identifier).name);
             case 'BinaryExpression':
                 return this.evaluateBinaryExpression(expression as BinaryExpression);
+            case 'UnaryExpression':
+                return this.evaluateUnaryExpression(expression as any);
             case 'CallExpression':
                 return this.evaluateCallExpression(expression as CallExpression);
             default:
@@ -133,6 +135,8 @@ class Interpreter {
         const right = this.evaluate(expression.right);
 
         switch (expression.operator) {
+            case 'ani': return left && right;
+            case 'kimva': return left || right;
             case '>': return left > right;
             case '>=': return left >= right;
             case '<': return left < right;
@@ -146,6 +150,17 @@ class Interpreter {
             case '%': return left % right;
             default:
                 throw new RuntimeError(`Unknown binary operator: ${expression.operator}`);
+        }
+    }
+
+    private evaluateUnaryExpression(expression: any): any {
+        const arg = this.evaluate(expression.argument);
+        switch (expression.operator) {
+            case '-': return -arg;
+            case 'nahi': return !arg;
+            case '!=': return !arg;
+            default:
+                throw new RuntimeError(`Unknown unary operator: ${expression.operator}`);
         }
     }
 

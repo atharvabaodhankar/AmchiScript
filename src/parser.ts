@@ -112,7 +112,27 @@ export class Parser {
   }
 
   private expression(): Expression {
-    return this.equality();
+    return this.logicalOr();
+  }
+
+  private logicalOr(): Expression {
+    let expr = this.logicalAnd();
+    while (this.match(TokenType.KIMVA)) {
+      const operator = this.previous().value;
+      const right = this.logicalAnd();
+      expr = { type: 'BinaryExpression', left: expr, operator, right } as BinaryExpression;
+    }
+    return expr;
+  }
+
+  private logicalAnd(): Expression {
+    let expr = this.equality();
+    while (this.match(TokenType.ANI)) {
+      const operator = this.previous().value;
+      const right = this.equality();
+      expr = { type: 'BinaryExpression', left: expr, operator, right } as BinaryExpression;
+    }
+    return expr;
   }
 
   private equality(): Expression {
@@ -156,7 +176,7 @@ export class Parser {
   }
 
   private unary(): Expression {
-    if (this.match(TokenType.MINUS, TokenType.NOT_EQUAL)) {
+    if (this.match(TokenType.MINUS, TokenType.NOT_EQUAL, TokenType.NAHI)) {
       const operator = this.previous().value;
       const right = this.unary();
       return { type: 'UnaryExpression', operator, argument: right };

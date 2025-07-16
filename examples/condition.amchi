@@ -1,10 +1,23 @@
 chala suru karu;
 
 heAhe num = 7;
-jar ((num % 2) == 0) {
-  dakhava num, " he ek sam anka aahe.";
+heAhe flag = khara;
+
+// Logical AND
+jar ((num > 0) ani (num < 10)) {
+  dakhava num, " is between 1 and 9.";
+}
+
+// Logical OR
+jar ((num < 0) kimva (num > 5)) {
+  dakhava num, " is less than 0 or greater than 5.";
+}
+
+// Logical NOT
+jar (nahi flag) {
+  dakhava "Flag is false.";
 } nahitar {
-  dakhava num, " he ek visam anka aahe.";
+  dakhava "Flag is true.";
 }
 
 bas re ata; 

@@ -53,9 +53,9 @@ export class Lexer {
     ['sarkhaaheka', TokenType.SARKHA_AHE_KA],
 
     // Logical
-    ['ani', TokenType.ANI],
-    ['kimva', TokenType.KIMVA],
-    ['nahi', TokenType.NAHI],
+    ['ani', TokenType.ANI], // and
+    ['kimva', TokenType.KIMVA], // or
+    ['nahi', TokenType.NAHI], // not
   ]);
 
   constructor(input: string) {
