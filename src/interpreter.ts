@@ -11,10 +11,14 @@ class ReturnException {
 }
 
 class Interpreter {
-    constructor() {
+    constructor(options?: { input?: () => Promise<string> | string, output?: (msg: string) => void }) {
         this.environment = new Environment();
+        this.inputHandler = options?.input;
+        this.outputHandler = options?.output;
     }
     private environment: Environment;
+    private inputHandler?: () => Promise<string> | string;
+    private outputHandler?: (msg: string) => void;
     interpret(program: Program): void {
         try {
             for (const statement of program.body) {
@@ -69,7 +73,12 @@ class Interpreter {
     private executePrintStatement(statement: PrintStatement): void {
         if (statement.expressions.length > 0) {
             const values = statement.expressions.map(expr => this.evaluate(expr));
-            console.log(values.map(this.stringify).join(''));
+            const output = values.map(this.stringify).join('');
+            if (this.outputHandler) {
+                this.outputHandler(output);
+            } else {
+                console.log(output);
+            }
         } else {
             throw new RuntimeError('PrintStatement expects at least one expression.');
         }
@@ -173,18 +182,34 @@ class Interpreter {
         }
     }
 
-    private evaluateCallExpression(expression: CallExpression): any {
+    private async evaluateCallExpression(expression: CallExpression): Promise<any> {
         // Only support built-in functions for now
         if (expression.callee.type === 'Identifier') {
             const name = expression.callee.name;
             if (name === 'ghye') {
-                // Node.js input sync
-                const readlineSync = require('readline-sync');
-                return readlineSync.question('');
+                if (this.inputHandler) {
+                    if (typeof this.inputHandler === 'function') {
+                        const result = this.inputHandler();
+                        if (result instanceof Promise) {
+                            return await result;
+                        }
+                        return result;
+                    }
+                    return this.inputHandler;
+                } else if (typeof window !== 'undefined' && window.prompt) {
+                    return window.prompt('');
+                } else {
+                    throw new RuntimeError('Input handler not provided and prompt is not available.');
+                }
             }
             if (name === 'dakhava') {
-                const args = expression.arguments.map(arg => this.evaluate(arg));
-                console.log(...args);
+                const args = await Promise.all(expression.arguments.map(arg => this.evaluate(arg)));
+                const output = args.join(' ');
+                if (this.outputHandler) {
+                    this.outputHandler(output);
+                } else {
+                    console.log(...args);
+                }
                 return null;
             }
             // User-defined function
@@ -199,7 +224,7 @@ class Interpreter {
                 this.environment = localEnv;
                 // Bind parameters
                 for (let i = 0; i < func.parameters.length; i++) {
-                    localEnv.define(func.parameters[i], this.evaluate(expression.arguments[i]));
+                    localEnv.define(func.parameters[i], await this.evaluate(expression.arguments[i]));
                 }
                 let result = undefined;
                 try {
