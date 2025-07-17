@@ -248,3 +248,132 @@ export class Lexer {
           case 't': value += '\t'; break;
           case 'r': value += '\r'; break;
           case '\\': value += '\\'; break;
+          case '"': value += '"'; break;
+          case "'": value += "'"; break;
+          default: value += nextChar; break;
+        }
+        this.advance();
+      } else {
+        value += char;
+        this.advance();
+      }
+    }
+    throw new Error(`Unterminated string at line ${this.line}`);
+  }
+
+  private number(): Token {
+    let value = '';
+    
+    while (!this.isAtEnd() && this.isDigit(this.peek())) {
+      value += this.advance();
+    }
+    
+    // Handle decimal point
+    if (!this.isAtEnd() && this.peek() === '.' && this.isDigit(this.peekNext())) {
+      value += this.advance(); // consume '.'
+      while (!this.isAtEnd() && this.isDigit(this.peek())) {
+        value += this.advance();
+      }
+    }
+    
+    return this.createToken(TokenType.NUMBER, value);
+  }
+
+  private identifier(): string {
+    let value = '';
+    
+    while (!this.isAtEnd() && this.isAlphaNumeric(this.peek())) {
+      value += this.advance();
+    }
+    
+    return value;
+  }
+
+  private skipWhitespace(): void {
+    while (!this.isAtEnd()) {
+      const char = this.peek();
+      if (char === ' ' || char === '\t') {
+        this.advance();
+      } else if (char === '\r') {
+        this.advance();
+        if (this.peek() === '\n') {
+          this.advance();
+        }
+      } else if (char === '\n') {
+        this.advance();
+      } else {
+        break;
+      }
+    }
+  }
+
+  private skipLineComment(): void {
+    while (!this.isAtEnd() && this.peek() !== '\n') {
+      this.advance();
+    }
+  }
+
+  private skipBlockComment(): void {
+    this.advance(); // skip '/'
+    this.advance(); // skip '*'
+    
+    while (!this.isAtEnd()) {
+      if (this.peek() === '*' && this.peekNext() === '/') {
+        this.advance(); // skip '*'
+        this.advance(); // skip '/'
+        break;
+      }
+      this.advance();
+    }
+  }
+
+  private createToken(type: TokenType, value: string): Token {
+    return {
+      type,
+      value,
+      line: this.line,
+      column: this.column
+    };
+  }
+
+  private isAtEnd(): boolean {
+    return this.position >= this.input.length;
+  }
+
+  private peek(): string {
+    if (this.isAtEnd()) return '\0';
+    return this.input[this.position];
+  }
+
+  private peekNext(): string {
+    if (this.position + 1 >= this.input.length) return '\0';
+    return this.input[this.position + 1];
+  }
+
+  private advance(): string {
+    if (this.isAtEnd()) return '\0';
+    
+    const char = this.input[this.position++];
+    if (char === '\n') {
+      this.line++;
+      this.column = 1;
+    } else {
+      this.column++;
+    }
+    return char;
+  }
+
+  private isDigit(char: string): boolean {
+    return char >= '0' && char <= '9';
+  }
+
+  private isAlpha(char: string): boolean {
+    return (char >= 'a' && char <= 'z') ||
+           (char >= 'A' && char <= 'Z') ||
+           char === '_';
+  }
+
+  private isAlphaNumeric(char: string): boolean {
+    return this.isAlpha(char) || this.isDigit(char);
+  }
+}

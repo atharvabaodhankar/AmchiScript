@@ -248,3 +248,79 @@ export class Parser {
   }
 
   private peek(): Token {
+    return this.tokens[this.current];
+  }
+
+  private previous(offset = 1): Token {
+    return this.tokens[this.current - offset];
+  }
+
+  private advance(): Token {
+    if (!this.isAtEnd()) {
+      this.current++;
+    }
+    return this.previous();
+  }
+
+  private check(type: TokenType): boolean {
+    if (this.isAtEnd()) return false;
+    return this.peek().type === type;
+  }
+
+  private match(...types: TokenType[]): boolean {
+    for (const type of types) {
+      if (this.check(type)) {
+        this.advance();
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private consume(type: TokenType, message: string): Token {
+    if (this.check(type)) {
+      return this.advance();
+    }
+    throw new Error(`Parse Error at line ${this.peek().line}, column ${this.peek().column}: ${message}`);
+  }
+
+  private checkNext(type: TokenType): boolean {
+    if (this.current + 1 >= this.tokens.length) return false;
+    return this.tokens[this.current + 1].type === type;
+  }
+
+  private assignmentStatement(): Statement {
+    console.log('DEBUG: Entering assignmentStatement at token:', this.peek());
+    const identifier = this.consume(TokenType.IDENTIFIER, 'Expected variable name.').value;
+    this.consume(TokenType.ASSIGN, 'Expected "=" in assignment.');
+    const value = this.expression();
+    this.consume(TokenType.SEMICOLON, 'Expected ";" after assignment.');
+    console.log('DEBUG: Exiting assignmentStatement at token:', this.peek());
+    return { type: 'Assignment', identifier, value };
+  }
+
+  private whileStatement(): Statement {
+    console.log('DEBUG: Entering whileStatement at token:', this.peek());
+    this.consume(TokenType.LPAREN, 'Expected "(" after while keyword.');
+    const condition = this.expression();
+    this.consume(TokenType.RPAREN, 'Expected ")" after while condition.');
+    this.consume(TokenType.LBRACE, 'Expected "{" before while body.');
+    const body: Statement[] = [];
+    while (!this.check(TokenType.RBRACE) && !this.isAtEnd()) {
+      console.log('DEBUG: whileStatement body, current token:', this.peek());
+      body.push(this.declaration());
+    }
+    this.consume(TokenType.RBRACE, 'Expected "}" after while body.');
+    console.log('DEBUG: Exiting whileStatement at token:', this.peek());
+    return { type: 'WhileStatement', condition, body: { type: 'BlockStatement', body } };
+  }
+
+  private returnStatement(): Statement {
+    let value: Expression | undefined = undefined;
+    if (!this.check(TokenType.SEMICOLON)) {
+      value = this.expression();
+    }
+    this.consume(TokenType.SEMICOLON, 'Expected ";" after return value.');
+    return { type: 'ReturnStatement', value };
+  }
+}
