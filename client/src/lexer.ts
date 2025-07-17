@@ -1,0 +1,1 @@
+// Copied from ../../src/lexer.ts 
