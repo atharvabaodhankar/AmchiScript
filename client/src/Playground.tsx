@@ -32,6 +32,31 @@ bas re ata;`
   }
 ];
 
+// Helper for copyable code block
+function CopyableCode({ code }: { code: string }) {
+  const [copied, setCopied] = React.useState(false);
+  return (
+    <div className="relative group my-2">
+      <pre className="bg-yellow-100/90 dark:bg-yellow-900/80 border border-yellow-300 dark:border-yellow-700 rounded-lg p-3 mb-2 font-mono overflow-x-auto whitespace-pre-wrap shadow-md transition-all duration-200 group-hover:shadow-lg group-hover:ring-2 group-hover:ring-yellow-300 dark:group-hover:ring-yellow-500 text-white">
+        {code}
+      </pre>
+      <button
+        className="absolute top-3 right-3 flex items-center gap-1 bg-yellow-200 dark:bg-yellow-700 text-yellow-900 dark:text-yellow-100 px-2 py-1 rounded-md text-xs font-semibold shadow hover:bg-yellow-300 dark:hover:bg-yellow-600 transition-all opacity-90 group-hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+        onClick={() => {
+          navigator.clipboard.writeText(code);
+          setCopied(true);
+          setTimeout(() => setCopied(false), 1200);
+        }}
+        aria-label="Copy code"
+        type="button"
+      >
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        {copied ? 'Copied!' : 'Copy'}
+      </button>
+    </div>
+  );
+}
+
 export default function Playground() {
   const [code, setCode] = useState<string>(EXAMPLES[1].code);
   const [output, setOutput] = useState<string>('');
@@ -166,21 +191,69 @@ export default function Playground() {
         <footer className="text-center text-xs text-gray-500 dark:text-gray-400 mt-8 opacity-80">
           Made with ❤️ for the Marathi coding community. | <span className="font-semibold">AmchiScript</span> Playground
 
-          {/* How to Use AmchiScript Section */}
-          <div className="max-w-2xl mx-auto mt-12 mb-10 p-6 rounded-2xl bg-yellow-50/80 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 shadow-md text-left">
-            <h2 className="text-xl font-bold text-yellow-700 dark:text-yellow-300 mb-2">How to Use AmchiScript</h2>
-            <ul className="list-disc pl-6 text-sm text-gray-800 dark:text-gray-100 space-y-1">
-              <li><span className="font-semibold text-yellow-800 dark:text-yellow-200">Program Start:</span> <code className="bg-yellow-100 dark:bg-yellow-800 px-1 rounded">chala suru karu;</code></li>
-              <li><span className="font-semibold text-yellow-800 dark:text-yellow-200">Program End:</span> <code className="bg-yellow-100 dark:bg-yellow-800 px-1 rounded">bas re ata;</code></li>
-              <li><span className="font-semibold text-yellow-800 dark:text-yellow-200">Variables:</span> <code className="bg-yellow-100 dark:bg-yellow-800 px-1 rounded">heAhe x = 5;</code></li>
-              <li><span className="font-semibold text-yellow-800 dark:text-yellow-200">Print:</span> <code className="bg-yellow-100 dark:bg-yellow-800 px-1 rounded">dakhava "Hello";</code></li>
-              <li><span className="font-semibold text-yellow-800 dark:text-yellow-200">Input:</span> <code className="bg-yellow-100 dark:bg-yellow-800 px-1 rounded">x = ghye();</code></li>
-              <li><span className="font-semibold text-yellow-800 dark:text-yellow-200">If/Else:</span> <code className="bg-yellow-100 dark:bg-yellow-800 px-1 rounded">jar (x {'>'} 5) {"{ ... }"} nahitar {"{ ... }"}</code></li>
-              <li><span className="font-semibold text-yellow-800 dark:text-yellow-200">Loops:</span> <code className="bg-yellow-100 dark:bg-yellow-800 px-1 rounded">punha kar (x {'<'} 10) {"{ ... }"}</code></li>
-              <li><span className="font-semibold text-yellow-800 dark:text-yellow-200">Functions:</span> <code className="bg-yellow-100 dark:bg-yellow-800 px-1 rounded">kaamkar add(a, b) {"{ ... }"}</code></li>
-              <li><span className="font-semibold text-yellow-800 dark:text-yellow-200">Comments:</span> <code className="bg-yellow-100 dark:bg-yellow-800 px-1 rounded">// This is a comment</code></li>
+
+          {/* About AmchiScript Section */}
+          <div className="max-w-3xl mx-auto mt-12 mb-10 p-8 rounded-2xl bg-yellow-50/90 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 shadow-lg text-left">
+            <h2 className="text-2xl font-extrabold text-yellow-700 dark:text-yellow-300 mb-2">About AmchiScript</h2>
+            <p className="mb-4 text-gray-800 dark:text-gray-100 text-base">
+              <span className="font-bold text-yellow-800 dark:text-yellow-200">AmchiScript</span> is a beginner-friendly, Marathi-inspired programming language designed to make coding fun and accessible for everyone. Its syntax is simple, expressive, and uses familiar Marathi words for programming concepts. Whether you're new to coding or want to explore a language in your mother tongue, AmchiScript is for you!
+            </p>
+            <h3 className="text-lg font-bold text-yellow-700 dark:text-yellow-200 mt-6 mb-2">Key Features</h3>
+            <ul className="list-disc pl-6 text-gray-800 dark:text-gray-100 text-sm space-y-1 mb-4">
+              <li>Marathi-inspired keywords and syntax</li>
+              <li>Easy-to-read, beginner-friendly structure</li>
+              <li>Supports variables, input/output, conditionals, loops, and functions</li>
+              <li>Great for learning, teaching, and having fun with code!</li>
             </ul>
-            <div className="mt-3 text-xs text-gray-600 dark:text-gray-300">See <a href="https://github.com/atharvabaodhankar/AmchiScript" target="_blank" rel="noopener noreferrer" className="underline text-yellow-800 dark:text-yellow-200 font-semibold">README</a> for full documentation and examples.</div>
+            <h3 className="text-lg font-bold text-yellow-700 dark:text-yellow-200 mt-6 mb-2">Language Guide</h3>
+            <div className="space-y-3 text-sm">
+              <div>
+                <span className="font-semibold text-yellow-800 dark:text-yellow-200">Program Structure:</span>
+                <CopyableCode code={`chala suru karu;\n...\nbas re ata;`} />
+                <span className="text-gray-700 dark:text-gray-100">Every program starts with <code>chala suru karu;</code> and ends with <code>bas re ata;</code>.</span>
+              </div>
+              <div>
+                <span className="font-semibold text-yellow-800 dark:text-yellow-200">Variables:</span>
+                <CopyableCode code={`heAhe x = 5;`} />
+                <span className="text-gray-700 dark:text-gray-100">Declare variables using <code>heAhe</code>.</span>
+              </div>
+              <div>
+                <span className="font-semibold text-yellow-800 dark:text-yellow-200">Print Output:</span>
+                <CopyableCode code={`dakhava "Hello, World!";`} />
+                <span className="text-gray-700 dark:text-gray-100">Use <code>dakhava</code> to print to the output.</span>
+              </div>
+              <div>
+                <span className="font-semibold text-yellow-800 dark:text-yellow-200">Input:</span>
+                <CopyableCode code={`heAhe name = "";\nname = ghye();`} />
+                <span className="text-gray-700 dark:text-gray-100">Use <code>ghye()</code> to get user input.</span>
+              </div>
+              <div>
+                <span className="font-semibold text-yellow-800 dark:text-yellow-200">If/Else:</span>
+                <CopyableCode code={`jar (x > 5) { ... } nahitar { ... }`} />
+                <span className="text-gray-700 dark:text-gray-100">Conditional logic with <code>jar</code> (if) and <code>nahitar</code> (else).</span>
+              </div>
+              <div>
+                <span className="font-semibold text-yellow-800 dark:text-yellow-200">Loops:</span>
+                <CopyableCode code={`punha kar (x < 10) { ... }`} />
+                <span className="text-gray-700 dark:text-gray-100">Repeat code with <code>punha kar</code> (while loop).</span>
+              </div>
+              <div>
+                <span className="font-semibold text-yellow-800 dark:text-yellow-200">Functions:</span>
+                <CopyableCode code={`kaamkar add(a, b) { ... }`} />
+                <span className="text-gray-700 dark:text-gray-100">Define functions with <code>kaamkar</code>.</span>
+              </div>
+              <div>
+                <span className="font-semibold text-yellow-800 dark:text-yellow-200">Comments:</span>
+                <CopyableCode code={`// This is a comment`} />
+                <span className="text-gray-700 dark:text-gray-100">Use <code>//</code> for single-line comments.</span>
+              </div>
+              <div>
+                <span className="font-semibold text-yellow-800 dark:text-yellow-200">Operators & Data Types:</span>
+                <CopyableCode code={'+, -, *, /, %, >, <, >=, <=, ==, !=, ani (and), kimva (or), nahi (not)\nNumbers, Strings, Booleans (khara/khota), Null (rikam)'} />
+                <span className="text-gray-700 dark:text-gray-100">Supports arithmetic, comparison, and logical operators. Data types: numbers, strings, booleans, null.</span>
+              </div>
+            </div>
+            <div className="mt-4 text-xs text-gray-600 dark:text-gray-300">See <a href="https://github.com/atharvabaodhankar/AmchiScript" target="_blank" rel="noopener noreferrer" className="underline text-yellow-800 dark:text-yellow-200 font-semibold">README</a> for full documentation and more examples.</div>
           </div>
 
           {/* Creator Section */}
