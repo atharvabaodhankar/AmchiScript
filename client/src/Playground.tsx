@@ -3,11 +3,47 @@ import { Lexer } from './lexer';
 import { Parser } from './parser';
 import { Interpreter } from './interpreter';
 
+const EXAMPLES = [
+  {
+    name: 'Hello World',
+    code: `chala suru karu;
+dakhava "Namaskar, AmchiScript!";
+bas re ata;`
+  },
+  {
+    name: 'Input Example',
+    code: `chala suru karu;
+heAhe name = "";
+dakhava "Tuzhe naav kaay?";
+name = ghye();
+dakhava "Namaskar, ", name, "!";
+bas re ata;`
+  },
+  {
+    name: 'If/Else',
+    code: `chala suru karu;
+heAhe age = 18;
+jar (age >= 18) {
+  dakhava "Adult";
+} nahitar {
+  dakhava "Not an adult";
+}
+bas re ata;`
+  }
+];
+
 export default function Playground() {
-  const [code, setCode] = useState<string>(`chala suru karu;\nheAhe myVariable = "Hello, Variables!";\ndakhava myVariable;\nbas re ata;`);
+  const [code, setCode] = useState<string>(EXAMPLES[1].code);
   const [output, setOutput] = useState<string>('');
   const [waitingForInput, setWaitingForInput] = useState<boolean>(false);
+  const [theme, setTheme] = useState<'light' | 'dark'>(
+    window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  );
   const inputResolveRef = useRef<((value: string) => void) | null>(null);
+
+  React.useEffect(() => {
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+  }, [theme]);
 
   // Handler for interpreter output
   const handleOutput = (msg: string) => {
@@ -49,52 +85,89 @@ export default function Playground() {
         input: handleInput,
         output: handleOutput,
       });
-      // Support async evaluateCallExpression
-      if ((interpreter.interpret as any).constructor.name === 'AsyncFunction') {
-        await (interpreter.interpret as any)(ast);
-      } else {
-        (interpreter.interpret as any)(ast);
-      }
+      await interpreter.interpret(ast);
     } catch (err: any) {
       setOutput((prev) => prev + (err.message || String(err)) + '\n');
     }
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">AmchiScript Playground</h1>
-      <textarea
-        className="w-full h-48 p-2 border rounded font-mono text-base mb-2"
-        value={code}
-        onChange={e => setCode(e.target.value)}
-        spellCheck={false}
-      />
-      <div className="flex gap-2 mb-2">
-        <button
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-          onClick={runCode}
-          disabled={waitingForInput}
-        >
-          Run
-        </button>
-      </div>
-      <div className="bg-gray-900 text-green-200 p-3 rounded h-40 overflow-y-auto font-mono whitespace-pre mb-2">
-        {output || 'Output will appear here.'}
-      </div>
-      {waitingForInput && (
-        <form onSubmit={handleInputSubmit} className="flex gap-2 mt-2">
-          <input
-            name="input"
-            className="flex-1 border rounded p-2 font-mono"
-            placeholder="Enter input..."
-            autoFocus
-            autoComplete="off"
-          />
-          <button className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700" type="submit">
-            Submit
+    <div className={`min-h-screen transition-colors duration-300 ${theme === 'dark' ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white' : 'bg-gradient-to-br from-blue-50 via-white to-blue-100 text-gray-900'}`}>
+      <header className="w-full py-8 flex flex-col items-center gap-2">
+        <div className="flex items-center gap-3">
+          <span className="text-4xl font-extrabold tracking-tight text-blue-600 dark:text-yellow-300 drop-shadow-lg">AmchiScript</span>
+          <span className="rounded-full px-3 py-1 text-xs font-bold bg-blue-100 dark:bg-yellow-900 dark:text-yellow-200 text-blue-700 ml-2 shadow">BETA</span>
+        </div>
+        <p className="max-w-xl text-center text-lg font-medium text-gray-700 dark:text-gray-200 mt-2">
+          <span className="font-bold text-blue-700 dark:text-yellow-200">AmchiScript</span> is a fun, beginner-friendly programming language inspired by Marathi! Try out code, play with variables, and see instant results below.
+        </p>
+        <div className="flex gap-2 mt-2">
+          <button
+            className={`px-3 py-1 rounded-full font-semibold border transition-colors duration-200 ${theme === 'dark' ? 'bg-gray-800 border-yellow-400 text-yellow-200 hover:bg-yellow-900' : 'bg-white border-blue-300 text-blue-700 hover:bg-blue-100'}`}
+            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            aria-label="Toggle dark mode"
+          >
+            {theme === 'dark' ? '🌞 Light Mode' : '🌙 Dark Mode'}
           </button>
-        </form>
-      )}
+        </div>
+      </header>
+      <main className="max-w-3xl mx-auto p-4 flex flex-col gap-6">
+        <div className="flex flex-col md:flex-row gap-4 items-stretch">
+          <div className="flex-1 flex flex-col gap-2">
+            <div className="flex items-center gap-2 mb-1">
+              <label className="font-semibold text-base">Code Editor</label>
+              <select
+                className="ml-auto px-2 py-1 rounded border text-sm bg-white dark:bg-gray-800 dark:text-white border-blue-200 dark:border-gray-700 focus:outline-none"
+                onChange={e => setCode(EXAMPLES[parseInt(e.target.value)].code)}
+                value={EXAMPLES.findIndex(ex => ex.code === code)}
+              >
+                {EXAMPLES.map((ex, i) => (
+                  <option value={i} key={ex.name}>{ex.name}</option>
+                ))}
+              </select>
+            </div>
+            <textarea
+              className={`w-full h-48 p-3 rounded-lg border font-mono text-base shadow focus:outline-none focus:ring-2 focus:ring-blue-400 transition ${theme === 'dark' ? 'bg-gray-900 border-gray-700 text-yellow-100' : 'bg-white border-blue-200 text-gray-900'}`}
+              value={code}
+              onChange={e => setCode(e.target.value)}
+              spellCheck={false}
+            />
+            <div className="flex gap-2 mt-2">
+              <button
+                className={`flex-1 py-2 rounded-lg font-bold text-lg shadow transition-colors duration-200 ${waitingForInput ? 'opacity-60 cursor-not-allowed' : theme === 'dark' ? 'bg-yellow-400 text-gray-900 hover:bg-yellow-300' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
+                onClick={runCode}
+                disabled={waitingForInput}
+              >
+                ▶️ Run
+              </button>
+            </div>
+          </div>
+          <div className={`flex-1 flex flex-col gap-2 ${theme === 'dark' ? '' : ''}`}>
+            <label className="font-semibold text-base mb-1">Output</label>
+            <div className={`flex-1 min-h-[12rem] max-h-64 overflow-y-auto rounded-lg p-3 font-mono text-base whitespace-pre shadow border ${theme === 'dark' ? 'bg-gray-950 border-gray-700 text-green-200' : 'bg-gray-100 border-blue-200 text-green-700'}`}
+              style={{ wordBreak: 'break-word' }}>
+              {output || 'Output will appear here.'}
+            </div>
+            {waitingForInput && (
+              <form onSubmit={handleInputSubmit} className="flex gap-2 mt-2">
+                <input
+                  name="input"
+                  className={`flex-1 border rounded-lg p-2 font-mono text-base focus:outline-none focus:ring-2 ${theme === 'dark' ? 'bg-gray-900 border-yellow-400 text-yellow-100 focus:ring-yellow-400' : 'bg-white border-blue-400 text-gray-900 focus:ring-blue-400'}`}
+                  placeholder="Enter input..."
+                  autoFocus
+                  autoComplete="off"
+                />
+                <button className={`px-4 py-2 rounded-lg font-bold transition-colors duration-200 ${theme === 'dark' ? 'bg-yellow-400 text-gray-900 hover:bg-yellow-300' : 'bg-green-600 text-white hover:bg-green-700'}`} type="submit">
+                  Submit
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+        <footer className="text-center text-xs text-gray-500 dark:text-gray-400 mt-8 opacity-80">
+          Made with ❤️ for the Marathi coding community. | <span className="font-semibold">AmchiScript</span> Playground
+        </footer>
+      </main>
     </div>
   );
 } 
