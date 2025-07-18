@@ -1,6 +1,5 @@
 import { RuntimeError } from './errors';
 import { Program, Statement, VarDeclaration, PrintStatement, Expression, Literal, Identifier, IfStatement, BinaryExpression, BlockStatement, Assignment, CallExpression } from './types';
-
 import { Environment } from './environment';
 
 class BreakException {}
@@ -19,10 +18,11 @@ class Interpreter {
     private environment: Environment;
     private inputHandler?: () => Promise<string> | string;
     private outputHandler?: (msg: string) => void;
-    interpret(program: Program): void {
+
+    async interpret(program: Program): Promise<void> {
         try {
             for (const statement of program.body) {
-                this.execute(statement);
+                await this.execute(statement);
             }
         } catch (error: unknown) {
             if (error instanceof RuntimeError) {
@@ -36,25 +36,25 @@ class Interpreter {
         }
     }
 
-    private execute(statement: Statement): void {
+    private async execute(statement: Statement): Promise<void> {
         switch (statement.type) {
             case 'VarDeclaration':
-                this.executeVarDeclaration(statement as VarDeclaration);
+                await this.executeVarDeclaration(statement as VarDeclaration);
                 break;
             case 'Assignment':
-                this.executeAssignment(statement as Assignment);
+                await this.executeAssignment(statement as Assignment);
                 break;
             case 'PrintStatement':
-                this.executePrintStatement(statement as PrintStatement);
+                await this.executePrintStatement(statement as PrintStatement);
                 break;
             case 'IfStatement':
-                this.executeIfStatement(statement as IfStatement);
+                await this.executeIfStatement(statement as IfStatement);
                 break;
             case 'WhileStatement':
-                this.executeWhileStatement(statement as any);
+                await this.executeWhileStatement(statement as any);
                 break;
             case 'BlockStatement':
-                this.executeBlockStatement(statement as BlockStatement);
+                await this.executeBlockStatement(statement as BlockStatement);
                 break;
             case 'BreakStatement':
                 throw new BreakException();
@@ -64,15 +64,18 @@ class Interpreter {
                 this.environment.define(statement.name, statement);
                 break;
             case 'ReturnStatement':
-                throw new ReturnException(statement.value ? this.evaluate(statement.value) : undefined);
+                throw new ReturnException(statement.value ? await this.evaluate(statement.value) : undefined);
             default:
                 throw new RuntimeError(`Unknown statement type: ${statement.type}`);
         }
     }
 
-    private executePrintStatement(statement: PrintStatement): void {
+    private async executePrintStatement(statement: PrintStatement): Promise<void> {
         if (statement.expressions.length > 0) {
-            const values = statement.expressions.map(expr => this.evaluate(expr));
+            const values = [];
+            for (const expr of statement.expressions) {
+                values.push(await this.evaluate(expr));
+            }
             const output = values.map(this.stringify).join('');
             if (this.outputHandler) {
                 this.outputHandler(output);
@@ -84,37 +87,37 @@ class Interpreter {
         }
     }
 
-    private executeVarDeclaration(statement: VarDeclaration): void {
+    private async executeVarDeclaration(statement: VarDeclaration): Promise<void> {
         let value = null;
         if (statement.initializer) {
-            value = this.evaluate(statement.initializer);
+            value = await this.evaluate(statement.initializer);
         }
         this.environment.define(statement.name, value);
     }
 
-    private executeIfStatement(statement: IfStatement): void {
-        if (this.evaluate(statement.condition)) {
-            this.execute(statement.consequent);
+    private async executeIfStatement(statement: IfStatement): Promise<void> {
+        if (await this.evaluate(statement.condition)) {
+            await this.execute(statement.consequent);
         } else if (statement.alternate) {
-            this.execute(statement.alternate);
+            await this.execute(statement.alternate);
         }
     }
 
-    private executeBlockStatement(statement: BlockStatement): void {
+    private async executeBlockStatement(statement: BlockStatement): Promise<void> {
         for (const stmt of statement.body) {
-            this.execute(stmt);
+            await this.execute(stmt);
         }
     }
 
-    private executeAssignment(statement: Assignment): void {
-        const value = this.evaluate(statement.value);
+    private async executeAssignment(statement: Assignment): Promise<void> {
+        const value = await this.evaluate(statement.value);
         this.environment.set(statement.identifier, value);
     }
 
-    private executeWhileStatement(statement: any): void {
-        while (this.evaluate(statement.condition)) {
+    private async executeWhileStatement(statement: any): Promise<void> {
+        while (await this.evaluate(statement.condition)) {
             try {
-                this.execute(statement.body);
+                await this.execute(statement.body);
             } catch (e) {
                 if (e instanceof BreakException) {
                     break;
@@ -127,30 +130,31 @@ class Interpreter {
         }
     }
 
-    private evaluate(expression: Expression): any {
+    private async evaluate(expression: Expression): Promise<any> {
         switch (expression.type) {
-            case 'Literal':
+            case 'Literal': {
                 const literal = expression as Literal;
                 if (typeof literal.value === 'string' && !isNaN(Number(literal.value))) {
                     return Number(literal.value);
                 }
                 return literal.value;
+            }
             case 'Identifier':
                 return this.environment.get((expression as Identifier).name);
             case 'BinaryExpression':
-                return this.evaluateBinaryExpression(expression as BinaryExpression);
+                return await this.evaluateBinaryExpression(expression as BinaryExpression);
             case 'UnaryExpression':
-                return this.evaluateUnaryExpression(expression as any);
+                return await this.evaluateUnaryExpression(expression as any);
             case 'CallExpression':
-                return this.evaluateCallExpression(expression as CallExpression);
+                return await this.evaluateCallExpression(expression as CallExpression);
             default:
                 throw new RuntimeError(`Unknown expression type: ${expression.type}`);
         }
     }
 
-    private evaluateBinaryExpression(expression: BinaryExpression): any {
-        const left = this.evaluate(expression.left);
-        const right = this.evaluate(expression.right);
+    private async evaluateBinaryExpression(expression: BinaryExpression): Promise<any> {
+        const left = await this.evaluate(expression.left);
+        const right = await this.evaluate(expression.right);
 
         switch (expression.operator) {
             case 'ani': return left && right;
@@ -171,8 +175,8 @@ class Interpreter {
         }
     }
 
-    private evaluateUnaryExpression(expression: any): any {
-        const arg = this.evaluate(expression.argument);
+    private async evaluateUnaryExpression(expression: any): Promise<any> {
+        const arg = await this.evaluate(expression.argument);
         switch (expression.operator) {
             case '-': return -arg;
             case 'nahi': return !arg;
@@ -203,7 +207,10 @@ class Interpreter {
                 }
             }
             if (name === 'dakhava') {
-                const args = await Promise.all(expression.arguments.map(arg => this.evaluate(arg)));
+                const args = [];
+                for (const arg of expression.arguments) {
+                    args.push(await this.evaluate(arg));
+                }
                 const output = args.join(' ');
                 if (this.outputHandler) {
                     this.outputHandler(output);
@@ -228,7 +235,7 @@ class Interpreter {
                 }
                 let result = undefined;
                 try {
-                    this.execute(func.body);
+                    await this.execute(func.body);
                 } catch (e) {
                     if (e instanceof ReturnException) {
                         result = e.value;
