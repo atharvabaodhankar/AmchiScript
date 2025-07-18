@@ -165,7 +165,28 @@ export default function Playground() {
         </div>
         <footer className="text-center text-xs text-gray-500 dark:text-gray-400 mt-8 opacity-80">
           Made with ❤️ for the Marathi coding community. | <span className="font-semibold">AmchiScript</span> Playground
-          <div className="flex flex-col items-center mt-10">
+
+          {/* How to Use AmchiScript Section */}
+          <div className="max-w-2xl mx-auto mt-12 mb-10 p-6 rounded-2xl bg-yellow-50/80 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 shadow-md text-left">
+            <h2 className="text-xl font-bold text-yellow-700 dark:text-yellow-300 mb-2">How to Use AmchiScript</h2>
+            <ul className="list-disc pl-6 text-sm text-gray-800 dark:text-gray-100 space-y-1">
+              <li><span className="font-semibold text-yellow-800 dark:text-yellow-200">Program Start:</span> <code className="bg-yellow-100 dark:bg-yellow-800 px-1 rounded">chala suru karu;</code></li>
+              <li><span className="font-semibold text-yellow-800 dark:text-yellow-200">Program End:</span> <code className="bg-yellow-100 dark:bg-yellow-800 px-1 rounded">bas re ata;</code></li>
+              <li><span className="font-semibold text-yellow-800 dark:text-yellow-200">Variables:</span> <code className="bg-yellow-100 dark:bg-yellow-800 px-1 rounded">heAhe x = 5;</code></li>
+              <li><span className="font-semibold text-yellow-800 dark:text-yellow-200">Print:</span> <code className="bg-yellow-100 dark:bg-yellow-800 px-1 rounded">dakhava "Hello";</code></li>
+              <li><span className="font-semibold text-yellow-800 dark:text-yellow-200">Input:</span> <code className="bg-yellow-100 dark:bg-yellow-800 px-1 rounded">x = ghye();</code></li>
+              <li><span className="font-semibold text-yellow-800 dark:text-yellow-200">If/Else:</span> <code className="bg-yellow-100 dark:bg-yellow-800 px-1 rounded">jar (x {'>'} 5) {"{ ... }"} nahitar {"{ ... }"}</code></li>
+              <li><span className="font-semibold text-yellow-800 dark:text-yellow-200">Loops:</span> <code className="bg-yellow-100 dark:bg-yellow-800 px-1 rounded">punha kar (x {'<'} 10) {"{ ... }"}</code></li>
+              <li><span className="font-semibold text-yellow-800 dark:text-yellow-200">Functions:</span> <code className="bg-yellow-100 dark:bg-yellow-800 px-1 rounded">kaamkar add(a, b) {"{ ... }"}</code></li>
+              <li><span className="font-semibold text-yellow-800 dark:text-yellow-200">Comments:</span> <code className="bg-yellow-100 dark:bg-yellow-800 px-1 rounded">// This is a comment</code></li>
+            </ul>
+            <div className="mt-3 text-xs text-gray-600 dark:text-gray-300">See <a href="https://github.com/atharvabaodhankar/AmchiScript" target="_blank" rel="noopener noreferrer" className="underline text-yellow-800 dark:text-yellow-200 font-semibold">README</a> for full documentation and examples.</div>
+          </div>
+
+          {/* Creator Section */}
+          <div className="text-center text-base font-semibold text-yellow-700 dark:text-yellow-300 mb-2">Created &amp; maintained by Atharva Baodhankar</div>
+
+          <div className="flex flex-col items-center mt-4">
             {/* Premium Glassmorphism Dev Card - Yellow Themed */}
             <div className="relative w-full max-w-md rounded-3xl p-0.5 bg-gradient-to-br from-yellow-300 via-yellow-200 to-yellow-400 shadow-2xl group transition-all duration-300">
               <div className="rounded-[22px] bg-white/80 dark:bg-gray-900/80 backdrop-blur-2xl p-8 flex flex-col items-center relative z-10 border-2 border-yellow-300">
