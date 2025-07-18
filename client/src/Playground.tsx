@@ -127,7 +127,7 @@ export default function Playground() {
               </select>
             </div>
             <textarea
-              className={`w-full h-48 p-3 rounded-lg border font-mono text-base shadow focus:outline-none focus:ring-2 focus:ring-blue-400 transition ${theme === 'dark' ? 'bg-gray-900 border-gray-700 text-yellow-100' : 'bg-white border-blue-200 text-gray-900'}`}
+              className={`w-full min-h-[20rem] max-h-[40rem] p-3 rounded-lg border font-mono text-base shadow focus:outline-none focus:ring-2 focus:ring-blue-400 transition resize-y ${theme === 'dark' ? 'bg-gray-900 border-gray-700 text-yellow-100' : 'bg-white border-blue-200 text-gray-900'}`}
               value={code}
               onChange={e => setCode(e.target.value)}
               spellCheck={false}
@@ -144,7 +144,7 @@ export default function Playground() {
           </div>
           <div className={`flex-1 flex flex-col gap-2 ${theme === 'dark' ? '' : ''}`}>
             <label className="font-semibold text-base mb-1">Output</label>
-            <div className={`flex-1 min-h-[12rem] max-h-64 overflow-y-auto rounded-lg p-3 font-mono text-base whitespace-pre shadow border ${theme === 'dark' ? 'bg-gray-950 border-gray-700 text-green-200' : 'bg-gray-100 border-blue-200 text-green-700'}`}
+            <div className={`flex-1 min-h-[20rem] max-h-[40rem] overflow-y-auto rounded-lg p-3 font-mono text-base whitespace-pre shadow border ${theme === 'dark' ? 'bg-gray-950 border-gray-700 text-green-200' : 'bg-gray-100 border-blue-200 text-green-700'}`}
               style={{ wordBreak: 'break-word' }}>
               {output || 'Output will appear here.'}
             </div>
