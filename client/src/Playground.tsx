@@ -6,29 +6,39 @@ import { Interpreter } from './interpreter';
 const EXAMPLES = [
   {
     name: 'Hello World',
-    code: `chala suru karu;
-dakhava "Namaskar, AmchiScript!";
-bas re ata;`
+    code: `chala suru karu;\ndakhava "Namaskar, AmchiScript!";\nbas re ata;`
   },
   {
     name: 'Input Example',
-    code: `chala suru karu;
-heAhe name = "";
-dakhava "Tuzhe naav kaay?";
-name = ghye();
-dakhava "Namaskar, ", name, "!";
-bas re ata;`
+    code: `chala suru karu;\nheAhe name = "";\ndakhava "Tuzhe naav kaay?";\nname = ghye();\ndakhava "Namaskar, ", name, "!";\nbas re ata;`
   },
   {
     name: 'If/Else',
-    code: `chala suru karu;
-heAhe age = 18;
-jar (age >= 18) {
-  dakhava "Adult";
-} nahitar {
-  dakhava "Not an adult";
-}
-bas re ata;`
+    code: `chala suru karu;\nheAhe age = 18;\njar (age >= 18) {\n  dakhava "Adult";\n} nahitar {\n  dakhava "Not an adult";\n}\nbas re ata;`
+  },
+  {
+    name: 'Arithmetic',
+    code: `chala suru karu;\nheAhe a = 10;\nheAhe b = 5;\nheAhe sum = a + b;\ndakhava "Sum: ", sum;\nbas re ata;`
+  },
+  {
+    name: 'Boolean Logic',
+    code: `chala suru karu;\nheAhe x = khara;\nheAhe y = khota;\njar (x ani nahi y) {\n  dakhava "x is true and y is false";\n}\nbas re ata;`
+  },
+  {
+    name: 'Nested If/Else',
+    code: `chala suru karu;\nheAhe n = 0;\njar (n > 0) {\n  dakhava "Positive";\n} nahitarjar (n < 0) {\n  dakhava "Negative";\n} nahitar {\n  dakhava "Zero";\n}\nbas re ata;`
+  },
+  {
+    name: 'While Loop',
+    code: `chala suru karu;\nheAhe i = 1;\npunhakar (i <= 5) {\n  dakhava i;\n  i = i + 1;\n}\nbas re ata;`
+  },
+  {
+    name: 'Function with Return',
+    code: `chala suru karu;\nkaamkar add(a, b) {\n  paratde a + b;\n}\ndakhava add(3, 4);\nbas re ata;`
+  },
+  {
+    name: 'Comments',
+    code: `chala suru karu;\n// This is a comment\nheAhe x = 10;\ndakhava x;\nbas re ata;`
   }
 ];
 
