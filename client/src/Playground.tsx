@@ -184,8 +184,7 @@ export default function Playground() {
             )}
           </div>
         </div>
-        <footer className="text-center text-xs text-gray-500 dark:text-gray-400 mt-8 opacity-80">
-          Made with ❤️ for the Marathi coding community. | <span className="font-semibold">AmchiScript</span> Playground
+
 
 
           {/* About AmchiScript Section */}
@@ -289,7 +288,10 @@ export default function Playground() {
               <div className="mt-2 text-xs opacity-70">Open source & community-driven. PRs and stars welcome!</div>
             </div>
           </div>
+          <footer className="text-center text-xs text-gray-500 dark:text-gray-400 mt-8 opacity-80">
+          Made with ❤️ for the Marathi coding community. | <span className="font-semibold">AmchiScript</span> Playground
         </footer>
+
       </main>
     </div>
   );
