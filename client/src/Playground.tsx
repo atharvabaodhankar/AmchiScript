@@ -122,9 +122,9 @@ export default function Playground() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
       <header className="w-full py-8 flex flex-col items-center gap-2">
-        <div className="flex items-center gap-3">
-          <span className="text-4xl font-extrabold tracking-tight text-yellow-300 drop-shadow-lg">AmchiScript</span>
-          <span className="rounded-full px-3 py-1 text-xs font-bold bg-yellow-900 text-yellow-200 ml-2 shadow">BETA</span>
+        <div className="flex flex-wrap items-center gap-2 md:gap-3 justify-center text-center">
+          <span className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-yellow-300 drop-shadow-lg">AmchiScript</span>
+          <span className="rounded-full px-2 py-1 text-xs font-bold bg-yellow-900 text-yellow-200 shadow mt-2 md:mt-0">BETA</span>
         </div>
         <p className="max-w-xl text-center text-lg font-medium text-gray-200 mt-2">
           <span className="font-bold text-yellow-200">AmchiScript</span> is a fun, beginner-friendly programming language inspired by Marathi! Try out code, play with variables, and see instant results below.
